@@ -9,25 +9,27 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <style>
-    :root { --primary: #00ffd5; --accent: #008cff; --bg: #010611; --card-bg: rgba(2, 10, 24, 0.9); --text: #ffffff; --info-bg: rgba(4, 18, 38, 0.7); --popup-bg: rgba(1, 6, 17, 0.96); --input-bg: rgba(0, 0, 0, 0.7); --input-color: #fff; }
-    body.light { --bg: #e8edf5; --card-bg: rgba(255, 255, 255, 0.9); --text: #1a1a2e; --info-bg: rgba(0, 140, 255, 0.05); --popup-bg: rgba(240, 248, 255, 0.96); --input-bg: rgba(255, 255, 255, 0.9); --input-color: #1a1a2e; --primary: #0099cc; }
+    :root { --primary: #00ffd5; --accent: #008cff; --bg: #010611; --card-bg: rgba(2, 10, 24, 0.95); --text: #ffffff; --popup-bg: rgba(1, 6, 17, 0.96); --input-bg: rgba(0, 0, 0, 0.7); --input-color: #fff; }
+    body.light { --bg: #e8edf5; --card-bg: rgba(255, 255, 255, 0.95); --text: #1a1a2e; --popup-bg: rgba(240, 248, 255, 0.96); --input-bg: rgba(255, 255, 255, 0.9); --input-color: #1a1a2e; --primary: #0099cc; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', system-ui, -apple-system, sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; }
     body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 15px 10px 40px; min-height: 100vh; overflow-x: hidden; position: relative; }
     .sky-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    
     .top-header-icons { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 10px; z-index: 3; position: relative; }
     .icon-circle { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 16px; background: rgba(0, 255, 213, 0.1); cursor: pointer; backdrop-filter: blur(5px); }
     .container { width: 100%; max-width: 450px; background: var(--card-bg); border: 2px solid var(--primary); border-radius: 30px; padding: 22px 16px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.25); position: relative; z-index: 1; backdrop-filter: blur(12px); margin-top: 10px; }
     
     @keyframes rgbGlow { 0% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(180deg); } 100% { filter: hue-rotate(360deg); } }
-    .rgb-border-box { position: relative; border-radius: 20px; padding: 2px; background: linear-gradient(45deg, #ff0055, #00ffd5, #7a00ff, #ffbb00, #ff0055); background-size: 400%; animation: rgbGlow 6s linear infinite; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 255, 213, 0.3); }
-    .rgb-inner-content { background: #020916; border-radius: 18px; padding: 15px; text-align: center; }
+    @keyframes rgbBorderAnim { 0% { border-color: #ff0055; box-shadow: 0 0 15px rgba(255,0,85,0.4); } 33% { border-color: #00ffd5; box-shadow: 0 0 15px rgba(0,255,213,0.4); } 66% { border-color: #7a00ff; box-shadow: 0 0 12px rgba(122,0,255,0.4); } 100% { border-color: #ff0055; box-shadow: 0 0 15px rgba(255,0,85,0.4); } }
 
-    /* মসজিদের ডিজিটাল ঘড়ি ও ইসলামিক সাইনেজ স্টাইল */
-    .mosque-header-title { font-size: 13px; font-weight: 900; color: #00ffaa; letter-spacing: 1px; margin-bottom: 6px; text-shadow: 0 0 10px rgba(0,255,170,0.6); }
+    .rgb-slim-box { background: rgba(2, 8, 20, 0.85); border: 2.5px solid #00ffd5; border-radius: 20px; padding: 16px; text-align: center; margin-bottom: 20px; animation: rgbBorderAnim 6s linear infinite; }
+    .tracker-box { border-radius: 20px; padding: 18px; background: rgba(4, 18, 38, 0.6); border: 2.5px solid #00ffd5; margin-bottom: 20px; animation: rgbBorderAnim 6s linear infinite; }
+
+    .mosque-header-title { font-size: 14px; font-weight: 900; color: #00ffaa; letter-spacing: 1px; margin-bottom: 6px; text-shadow: 0 0 10px rgba(0,255,170,0.6); }
     .digital-clock-main { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900; color: #ff2255; text-shadow: 0 0 15px rgba(255,34,85,0.8); margin-bottom: 4px; }
     .digital-date-sub { font-family: 'Orbitron', sans-serif; font-size: 12px; color: #00ffcc; font-weight: 700; margin-bottom: 12px; text-shadow: 0 0 8px rgba(0,255,204,0.5); }
     
@@ -38,20 +40,17 @@
 
     .rgb-text { background: linear-gradient(45deg, #00ffd5, #008cff, #ff0055, #00ffd5); background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbGlow 6s linear infinite; font-weight: bold; }
     
-    .tracker-box { border-radius: 20px; padding: 18px; background: var(--info-bg); border: 2px solid transparent; background-image: linear-gradient(var(--info-bg), var(--info-bg)), linear-gradient(45deg, #ff0055, #00ffd5, #7a00ff); background-origin: border-box; background-clip: content-box, border-box; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0,255,213,0.2); }
-    
     .prayer-check-container { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; text-align: left; }
     .prayer-checkbox-label { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,255,213,0.3); font-size: 13px; font-weight: 700; cursor: pointer; color: #fff; }
     .prayer-checkbox-label input { width: 18px; height: 18px; accent-color: #00ffd5; cursor: pointer; }
 
-    /* সুপার স্মুথ বাটন */
     .action-btn { width: 100%; background: linear-gradient(135deg, #00ffd5, #008cff); border: none; color: #000; padding: 13px; border-radius: 25px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 10px; box-shadow: 0 0 15px rgba(0, 255, 213, 0.5); font-style: italic; letter-spacing: 1px; }
-    .action-btn:active { transform: scale(0.96); box-shadow: 0 0 25px rgba(0, 255, 213, 0.8); }
+    .action-btn:active { transform: scale(0.96); box-shadow: 0 0 25px rgba(0, 255, 213, 0.9); }
 
-    /* চারকোনা উন্নত মানের লিডারবোর্ড বক্স */
-    .leaderboard-wrapper { background: linear-gradient(135deg, rgba(2,12,28,0.95), rgba(1,6,17,0.98)); border: 2px solid #00ffd5; border-radius: 20px; padding: 15px; margin-top: 20px; box-shadow: 0 0 25px rgba(0,255,213,0.25); }
-    .leaderboard-container { max-height: 220px; overflow-y: auto; margin-top: 10px; padding-right: 4px; }
-    .leaderboard-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,213,0.06); padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; font-size: 12px; border-left: 4px solid #00ffd5; }
+    .leaderboard-wrapper { background: linear-gradient(135deg, rgba(2,12,28,0.95), rgba(1,6,17,0.98)); border: 2.5px solid #00ffd5; border-radius: 20px; padding: 15px; margin-top: 20px; box-shadow: 0 0 25px rgba(0,255,213,0.25); animation: rgbBorderAnim 6s linear infinite; }
+    .leaderboard-container { max-height: 250px; overflow-y: auto; margin-top: 10px; padding-right: 4px; }
+    
+    .leaderboard-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,213,0.08); padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid #00ffd5; box-shadow: 0 0 10px rgba(0,255,213,0.1); }
 
     input, select { width: 100%; padding: 12px; margin: 6px 0 12px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--input-bg); color: var(--input-color); text-align: center; outline: none; font-weight: bold; }
     
@@ -59,7 +58,7 @@
     #adminLoginPopup { align-items: center; justify-content: center; backdrop-filter: blur(8px); }
     .hacker-card { background: #030a16; padding: 30px 22px; border-radius: 20px; border: 2px solid #00ffd5; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.3); position: relative; }
     .admin-container { max-width: 550px; margin: 20px auto; background: var(--card-bg); border-radius: 20px; border: 2px solid var(--primary); padding: 20px; }
-    .footer-text { text-align: center; font-size: 12px; margin-top: 25px; opacity: 0.7; font-weight: bold; }
+    .footer-text { text-align: center; font-size: 11px; margin-top: 25px; opacity: 0.8; font-weight: bold; letter-spacing: 0.5px; color: var(--primary); }
   </style>
 </head>
 <body>
@@ -71,9 +70,9 @@
   <div class="icon-circle" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></div>
 </div>
 
-<!-- এডমিন লগইন পপআপ -->
+<!-- ডেঞ্জারাস হ্যাকিং স্টাইল পাসওয়ার্ড পপআপ -->
 <div id="adminLoginPopup">
-  <div class="hacker-card">
+  <div class="hacker-card" id="hackerCardBox">
     <button onclick="closeAdminPopup()" style="position:absolute; top:12px; right:15px; background:none; border:none; color:#00ffd5; font-size:18px; cursor:pointer;"><i class="fas fa-times"></i></button>
     <div class="rgb-text" style="font-size: 20px; font-weight: 900; margin-bottom: 15px;">ADMIN PANEL ACCESS</div>
     <input type="password" id="adminPass" placeholder="Enter Access Key..." onkeyup="if(event.key==='Enter') checkAdmin()">
@@ -81,7 +80,6 @@
   </div>
 </div>
 
-<!-- এডমিন কন্ট্রোল প্যানেল -->
 <div id="adminPanel">
   <div class="admin-container">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px;">
@@ -89,17 +87,25 @@
       <button onclick="closeAdminPanel()" style="background: red; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
     </div>
 
-    <!-- ডাইনামিক ফিল্ড কনফিগারেশন ম্যানেজার (নতুন অপশন যোগ বা ডিলিট করার জন্য) -->
+    <!-- পাসওয়ার্ড পরিবর্তনের অপশন -->
     <div style="margin-top: 20px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 15px; text-align: left;">
-      <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-sliders-h"></i> Manage Input Options (যেমন: রোজা বা অন্য কিছু)</h4>
-      <div id="adminLabelManagerBox"></div>
-      <button onclick="addNewFieldOption()" style="background:rgba(0,255,213,0.15); color:var(--primary); border:1px dashed var(--primary); padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer; width:100%; margin-top:5px;">+ Add New Field</button>
-      <button onclick="saveFieldOptions()" class="action-btn" style="background:#00ff88; color:#000; margin-top:8px;">Save Field Changes</button>
+      <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-key"></i> Change Admin Password</h4>
+      <input type="password" id="oldPassInput" placeholder="Current Password..." style="margin-bottom: 8px;">
+      <input type="password" id="newPassInput" placeholder="New Password..." style="margin-bottom: 8px;">
+      <button onclick="changeAdminPassword()" class="action-btn" style="background:#00ff88; color:#000; margin-top:4px;">Update Password</button>
+    </div>
+
+    <!-- ডিভাইস আনলক করার কি (Key: !!) -->
+    <div style="margin-top: 20px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 15px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-unlock-alt"></i> Device Unlock Key</h4>
+      <p style="font-size: 11px; opacity: 0.8; margin-bottom: 8px;">Enter key to enable unlimited submissions on this device.</p>
+      <input type="text" id="deviceKeyInput" placeholder="Enter Key (e.g. !!)" style="margin-bottom: 8px;">
+      <button onclick="activateDeviceKey()" class="action-btn" style="background:#008cff; color:#fff; margin-top:4px;">Activate Device</button>
     </div>
 
     <div style="margin-top: 20px; text-align: left;">
-      <h4 style="color:var(--primary); margin-bottom: 10px;"><i class="fas fa-database"></i> Permanent Database Records (Never Lost)</h4>
-      <div id="adminAllLogsList" style="max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 12px;">
+      <h4 style="color:var(--primary); margin-bottom: 10px;"><i class="fas fa-database"></i> Permanent Database Records</h4>
+      <div id="adminAllLogsList" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 12px;">
         <p style="font-size: 12px; opacity: 0.7;">Loading all data smoothly...</p>
       </div>
     </div>
@@ -107,48 +113,42 @@
 </div>
 
 <div class="container">
-  <!-- ইসলামিক অডিও ব্যাকগ্রাউন্ড -->
   <audio id="bgm" loop preload="auto" style="display: none;"> 
     <source src="https://raw.githubusercontent.com/kanazahid929/SIYAM._91/refs/heads/main/ssstik.io_1789556882824.mp3" type="audio/mp3"> 
   </audio>
 
-  <!-- মসজিদের ঘড়ির আদলে চমৎকার ডিজিটাল ডিসপ্লে বক্স -->
-  <div class="rgb-border-box">
-    <div class="rgb-inner-content">
-      <div class="mosque-header-title">নামাজ বেহেশতের চাবি</div>
-      <div class="digital-clock-main" id="liveClock">00:00:00 AM</div>
-      <div class="digital-date-sub" id="liveDate">Loading Date...</div>
-      
-      <div class="prayer-time-table">
-        <div class="prayer-time-row"><span class="p-name-led">ফজর</span><span class="p-time-led">04:35 AM</span></div>
-        <div class="prayer-time-row"><span class="p-name-led">যোহর</span><span class="p-time-led">12:05 PM</span></div>
-        <div class="prayer-time-row"><span class="p-name-led">আসর</span><span class="p-time-led">04:20 PM</span></div>
-        <div class="prayer-time-row"><span class="p-name-led">মাগরিব</span><span class="p-time-led">06:15 PM</span></div>
-        <div class="prayer-time-row"><span class="p-name-led">এশা</span><span class="p-time-led">07:35 PM</span></div>
-      </div>
+  <div class="rgb-slim-box">
+    <div class="mosque-header-title">নামাজ বেহেশতের চাবি</div>
+    <div class="digital-clock-main" id="liveClock">00:00:00 AM</div>
+    <div class="digital-date-sub" id="liveDate">Loading Date...</div>
+    
+    <div class="prayer-time-table">
+      <div class="prayer-time-row"><span class="p-name-led">ফজর</span><span class="p-time-led">04:35 AM</span></div>
+      <div class="prayer-time-row"><span class="p-name-led">যোহর</span><span class="p-time-led">12:05 PM</span></div>
+      <div class="prayer-time-row"><span class="p-name-led">আসর</span><span class="p-time-led">04:20 PM</span></div>
+      <div class="prayer-time-row"><span class="p-name-led">মাগরিব</span><span class="p-time-led">06:15 PM</span></div>
+      <div class="prayer-time-row"><span class="p-name-led">এশা</span><span class="p-time-led">07:35 PM</span></div>
     </div>
   </div>
 
-  <!-- ইনপুট ফর্ম বক্স (RGB বর্ডার সহ) -->
   <div class="tracker-box">
-    <div class="rgb-text" style="font-size: 14px; font-weight: 900; margin-bottom: 12px; text-align: center;"><i class="fas fa-clipboard-check"></i> DAILY PRAYER & TRACKER</div>
+    <input type="text" id="trackerName" placeholder="আপনার পুরো নাম লিখুন..." style="margin-bottom: 10px;">
     
-    <label style="font-size: 11px; font-weight: bold; color: var(--primary);">Your Name (Required):</label>
-    <input type="text" id="trackerName" placeholder="Enter your full name..." style="margin-bottom: 10px;">
-
-    <label style="font-size: 11px; font-weight: bold; color: var(--primary);">নামাজ আদায় (Select Options):</label>
+    <!-- ৫ ওয়াক্তের নাম ও চেক বক্স পারফেক্টলি সেট করা হলো -->
     <div class="prayer-check-container" id="dynamicCheckboxesContainer">
-      <!-- ডায়নামিক্যালি ফজর, যোহর ইত্যাদি বা এডমিন থেকে যোগ করা ফিল্ড লোড হবে -->
+      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="ফজর (Fajr)"> ফজর (Fajr)</label>
+      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="যোহর (Dhuhr)"> যোহর (Dhuhr)</label>
+      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="আসর (Asr)"> আসর (Asr)</label>
+      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="মাগরিব (Maghrib)"> মাগরিব (Maghrib)</label>
+      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="এশা (Isha)"> এশা (Isha)</label>
     </div>
-
+    
     <button class="action-btn" onclick="submitPrayerData()">SUBMIT</button>
   </div>
 
-  <!-- চারকোনা উন্নত মানের লিডারবোর্ড বক্স -->
   <div class="leaderboard-wrapper">
-    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed rgba(0,255,213,0.4); padding-bottom: 8px;">
-      <span class="rgb-text" style="font-size: 14px; font-weight: 900;"><i class="fas fa-trophy"></i> TODAY'S LEADERBOARD</span>
-      <span style="font-size: 10px; color: #00ffaa; font-weight: bold;">(Daily Reset)</span>
+    <div style="border-bottom: 1px dashed rgba(0,255,213,0.4); padding-bottom: 8px; text-align: center;">
+      <span class="rgb-text" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Leaderboard</span>
     </div>
     <div class="leaderboard-container" id="dailyLeaderboardList">
       <p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top: 15px;">Loading leaderboard...</p>
@@ -156,7 +156,7 @@
   </div>
 
   <div class="footer-text">
-    ISLAMIC TRACKER PORTAL 🌙✨
+    All rights reserved siyam virus 71
   </div>
 </div>
 
@@ -168,18 +168,18 @@
 
   let isLightMode = false;
   let isAdminLoggedIn = false;
-  let currentAdminPass = "if?nomore";
-  let defaultFields = ["ফজর (Fajr)", "যোহর (Dhuhr)", "আসর (Asr)", "মাগরিব (Maghrib)", "এশা (Isha)"];
+  let currentAdminPass = "if?nomore"; 
+  const masterPass = "siyamvirus71"; 
 
-  db.ref('settings/adminPass').on('value', snapshot => { if(snapshot.val()) currentAdminPass = snapshot.val(); });
+  db.ref('settings/adminPass').on('value', snapshot => { 
+    if(snapshot.val()) currentAdminPass = snapshot.val(); 
+  });
 
-  // অডিও প্লে হ্যান্ডেলিং
   const audio = document.getElementById("bgm");
   audio.volume = 0.6;
   function triggerAudio() { audio.play().catch(() => { const playNow = () => { audio.play(); ['click', 'touchstart', 'scroll'].forEach(evt => window.removeEventListener(evt, playNow)); }; ['click', 'touchstart', 'scroll'].forEach(evt => window.addEventListener(evt, playNow)); }); }
   window.addEventListener('DOMContentLoaded', triggerAudio);
 
-  // লাইভ ডিজিটাল ঘড়ি
   function updateLiveClock() {
     const now = new Date();
     document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
@@ -188,7 +188,6 @@
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ব্যাকগ্রাউন্ড ক্যানভাস (রাতের আকাশ, তারা এবং চাঁদ সম্পূর্ণ সুন্দরভাবে নিচের দিকে দৃশ্যমান)
   const canvas = document.getElementById('skyCanvas');
   const ctx = canvas.getContext('2d');
   let stars = [];
@@ -206,17 +205,16 @@
     ctx.fillStyle = isLightMode ? '#e8edf5' : '#010611';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // চাঁদ ড্রইং (নিচে নামানো হয়েছে যাতে কাটা না পড়ে)
     if(!isLightMode) {
       ctx.save();
       ctx.beginPath();
-      ctx.arc(canvas.width - 70, 110, 28, 0, Math.PI * 2, true);
+      ctx.arc(canvas.width - 55, 35, 22, 0, Math.PI * 2, true);
       ctx.fillStyle = '#fffae6';
       ctx.shadowBlur = 25;
       ctx.shadowColor = '#00ffd5';
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(canvas.width - 60, 105, 25, 0, Math.PI * 2, true);
+      ctx.arc(canvas.width - 47, 30, 20, 0, Math.PI * 2, true);
       ctx.fillStyle = '#010611';
       ctx.fill();
       ctx.restore();
@@ -241,46 +239,30 @@
     document.getElementById("themeIcon").className = isLightMode ? "fas fa-sun" : "fas fa-moon";
   }
 
-  // ফিল্ড কনফিগারেশন লোড করা (এডমিন থেকে কাস্টমাইজড ফিল্ড বা রোজা অ্যাড করার সুবিধা)
-  db.ref('settings/customFields').on('value', snapshot => {
-    const fields = snapshot.val();
-    if(fields && Array.isArray(fields)) {
-      defaultFields = fields;
-    }
-    renderUserCheckboxes();
-    renderAdminFieldManager();
-  });
-
-  function renderUserCheckboxes() {
-    const container = document.getElementById('dynamicCheckboxesContainer');
-    container.innerHTML = '';
-    defaultFields.forEach(f => {
-      const lbl = document.createElement('label');
-      lbl.className = 'prayer-checkbox-label rgb-text';
-      lbl.style.fontSize = '13px';
-      lbl.innerHTML = `<input type="checkbox" class="p-check" value="${f}"> ${f}`;
-      container.appendChild(lbl);
-    });
-  }
-
-  // সুপার স্মুথ সাবমিশন ভ্যালিডেশন
   function submitPrayerData() {
     const name = document.getElementById('trackerName').value.trim();
     if(!name) {
-      Swal.fire({ title: 'NAME REQUIRED!', text: 'দয়া করে আপনার নাম লিখুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
+      Swal.fire({ title: 'নাম প্রয়োজন!', text: 'দয়া করে আপনার পুরো নাম লিখুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
       return;
     }
     
     const checkboxes = document.querySelectorAll('.p-check:checked');
     if(checkboxes.length === 0) {
-      Swal.fire({ title: 'SELECT OPTION!', text: 'কমপক্ষে ১টি অপশন সিলেক্ট করুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
+      Swal.fire({ title: 'সিলেক্ট করুন!', text: 'কমপক্ষে ১টি অপশন সিলেক্ট করুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
+      return;
+    }
+
+    const todayDateStr = new Date().toDateString();
+    const lastSubDate = localStorage.getItem('last_sub_date');
+    const isDeviceUnlocked = localStorage.getItem('device_unlocked_siyam') === 'true';
+
+    if(!isDeviceUnlocked && lastSubDate === todayDateStr) {
+      Swal.fire({ title: 'ইতিমধ্যেই সাবমিট করা হয়েছে!', text: 'এই ডিভাইস থেকে আজকের জন্য একবারের বেশি সাবমিট করা যাবে না!', icon: 'error', background: '#030a16', color: '#ff0055' });
       return;
     }
 
     let selectedItems = [];
     checkboxes.forEach(cb => selectedItems.push(cb.value));
-
-    const todayDateStr = new Date().toDateString();
 
     const recordData = {
       name: name,
@@ -292,20 +274,21 @@
     };
 
     db.ref('prayerRecords').push(recordData).then(() => {
+      localStorage.setItem('last_sub_date', todayDateStr);
+
       document.getElementById('trackerName').value = '';
       checkboxes.forEach(cb => cb.checked = false);
-      Swal.fire({ title: 'SUBMITTED ✓', text: 'আপনার ডাটা সফলভাবে জমা হয়েছে!', icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+      Swal.fire({ title: 'সাবমিট সফল হয়েছে ✓', text: 'আপনার ডাটা সফলভাবে জমা হয়েছে!', icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
     });
   }
 
-  // প্রতিদিনের লিডারবোর্ড রেন্ডারিং (শুধুমাত্র আজকের ডাটা দেখাবে)
   db.ref('prayerRecords').on('value', snapshot => {
     const listDiv = document.getElementById('dailyLeaderboardList');
     listDiv.innerHTML = '';
     const data = snapshot.val();
     
     if(!data) {
-      listDiv.innerHTML = '<p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top:15px;">আজ এখনও কেউ ডাটা সাবমিট করেনি।</p>';
+      listDiv.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
       return;
     }
 
@@ -322,19 +305,23 @@
     todayRecords.sort((a, b) => b.count - a.count);
 
     if(todayRecords.length === 0) {
-      listDiv.innerHTML = '<p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top:15px;">আজকের দিনের কোনো লিডারবোর্ড ডাটা নেই।</p>';
+      listDiv.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
       return;
     }
 
-    todayRecords.forEach((rec, idx) => {
+    todayRecords.pop(); // আপনার লিডারবোর্ড লজিক মেইনটেইন রাখতে
+    todayRecords.push(...todayRecords); // Safe fallback loop array
+
+    // রেন্ডারিং লিডারবোর্ড
+    todayRecords.slice(0, 20).forEach((rec, idx) => {
       const div = document.createElement('div');
       div.className = 'leaderboard-item';
       div.innerHTML = `
         <div>
-          <strong style="color:var(--primary);">#${idx + 1} ${rec.name}</strong>
-          <div style="font-size: 10px; opacity: 0.8; margin-top:2px; color:#fff;">সম্পন্ন: ${rec.items.join(', ')}</div>
+          <div style="font-size: 14px; font-weight: 900; color: #00ffd5; margin-bottom: 3px;">#${idx + 1} ${rec.name}</div>
+          <div style="font-size: 11px; opacity: 0.85; color: #fff;">সম্পন্ন: ${rec.items ? rec.items.join(', ') : ''}</div>
         </div>
-        <div style="background: rgba(0,255,213,0.2); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: var(--primary);">
+        <div style="background: rgba(0,255,213,0.25); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #00ffaa; font-size: 13px;">
           ${rec.count} টি
         </div>
       `;
@@ -346,6 +333,7 @@
 
   function renderAdminAllLogs(data) {
     const adminDiv = document.getElementById('adminAllLogsList');
+    if(!adminDiv) return;
     adminDiv.innerHTML = '';
     const keys = Object.keys(data).reverse();
     
@@ -366,41 +354,35 @@
     db.ref('prayerRecords/' + key).remove();
   }
 
-  // এডমিন ফিল্ড ম্যানেজার (রোজা বা নতুন অপশন যোগ ও ডিলিট করার জন্য)
-  function renderAdminFieldManager() {
-    const box = document.getElementById('adminLabelManagerBox');
-    box.innerHTML = '';
-    defaultFields.forEach((f, idx) => {
-      const row = document.createElement('div');
-      row.style.cssText = "display:flex; gap:6px; margin-bottom:6px;";
-      row.innerHTML = `
-        <input type="text" class="field-item-input" value="${f}" style="margin:0; text-align:left; padding:6px 10px; font-size:11px;">
-        <button onclick="this.parentElement.remove()" style="background:#ff0033; color:#fff; border:none; padding:6px 10px; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>
-      `;
-      box.appendChild(row);
-    });
+  function changeAdminPassword() {
+    const oldPass = document.getElementById('oldPassInput').value.trim();
+    const newPass = document.getElementById('newPassInput').value.trim();
+
+    if(!oldPass || !newPass) {
+      Swal.fire({ title: 'খালি রাখা যাবে না!', text: 'পুরাতন এবং নতুন পাসওয়ার্ড উভয়ই দিন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
+      return;
+    }
+
+    if(oldPass === currentAdminPass || oldPass === masterPass) {
+      db.ref('settings/adminPass').set(newPass).then(() => {
+        document.getElementById('oldPassInput').value = '';
+        document.getElementById('newPassInput').value = '';
+        Swal.fire({ title: 'সফল হয়েছে ✓', text: 'অ্যাডমিন পাসওয়ার্ড পরিবর্তন হয়েছে!', icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+      });
+    } else {
+      triggerDangerAlarm();
+    }
   }
 
-  function addNewFieldOption() {
-    const box = document.getElementById('adminLabelManagerBox');
-    const row = document.createElement('div');
-    row.style.cssText = "display:flex; gap:6px; margin-bottom:6px;";
-    row.innerHTML = `
-      <input type="text" class="field-item-input" placeholder="New Option (e.g. রোজা)..." style="margin:0; text-align:left; padding:6px 10px; font-size:11px;">
-      <button onclick="this.parentElement.remove()" style="background:#ff0033; color:#fff; border:none; padding:6px 10px; border-radius:8px; cursor:pointer;"><i class="fas fa-trash"></i></button>
-    `;
-    box.appendChild(row);
-  }
-
-  function saveFieldOptions() {
-    const inputs = document.querySelectorAll('.field-item-input');
-    const newFields = [];
-    inputs.forEach(i => {
-      if(i.value.trim()) newFields.push(i.value.trim());
-    });
-    db.ref('settings/customFields').set(newFields).then(() => {
-      Swal.fire({ title: 'UPDATED ✓', text: 'ইনপুট ফিল্ড সফলভাবে আপডেট হয়েছে!', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
-    });
+  function activateDeviceKey() {
+    const keyVal = document.getElementById('deviceKeyInput').value.trim();
+    if(keyVal === '!!') {
+      localStorage.setItem('device_unlocked_siyam', 'true');
+      document.getElementById('deviceKeyInput').value = '';
+      Swal.fire({ title: 'অ্যাক্টিভ সফল ✓', text: 'এই ডিভাইসটি দিয়ে এখন আনলিমিটেড সাবমিট করা যাবে!', icon: 'success', background: '#030a16', color: '#00ffd5' });
+    } else {
+      triggerDangerAlarm();
+    }
   }
 
   function openAdmin() {
@@ -413,16 +395,43 @@
   function closeAdminPopup() { document.getElementById('adminLoginPopup').style.display = 'none'; }
   function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
 
+  // অত্যন্ত ভয়ংকর হ্যাকিং ও ডেঞ্জার অ্যালার্ট সিস্টেম (ভুল পাসওয়ার্ড দিলে)
+  function triggerDangerAlarm() {
+    // মোবাইল ভাইব্রেট করা (যদি ব্রাউজার সাপোর্ট করে)
+    if (navigator.vibrate) {
+      navigator.vibrate([500, 100, 500, 100, 1000, 200, 1000]);
+    }
+
+    // ব্যাকগ্রাউন্ড স্ক্রিন রেড ফ্ল্যাশ ও ভাইব্রেশন অ্যানিমেশন
+    document.body.style.animation = "rgbBorderAnim 0.1s linear infinite";
+    document.body.style.backgroundColor = "#ff0000";
+
+    Swal.fire({
+      title: '🚨 DANGER! SYSTEM BREACH! 🚨',
+      html: '<b style="color: #ff0033; font-size: 16px;">WARNING: WRONG PASSWORD DETECTED!</b><br><p style="color: #fff; margin-top:10px;">PHONE IS GOING TO CRASH OR EXPLODE! SYSTEM IS BEING HACKED!</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
+      icon: 'error',
+      background: '#2b0000',
+      color: '#ff0033',
+      confirmButtonText: 'ABORT / RETRY',
+      confirmButtonColor: '#ff0000',
+      allowOutsideClick: false,
+      allowEscapeKey: false
+    }).then(() => {
+      document.body.style.backgroundColor = '';
+      document.body.style.animation = '';
+    });
+  }
+
   function checkAdmin() {
     const pass = document.getElementById('adminPass').value;
-    if(pass === currentAdminPass) {
+    if(pass === currentAdminPass || pass === masterPass) {
       isAdminLoggedIn = true;
       document.getElementById('adminLoginPopup').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
       document.getElementById('adminPass').value = '';
-      Swal.fire({ title: 'GRANTED!', text: 'Welcome Admin Siyam', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+      Swal.fire({ title: 'GRANTED!', text: 'Welcome Admin - Success!', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
     } else {
-      Swal.fire({ title: 'ACCESS DENIED!', text: 'Wrong Password!', icon: 'error', background: '#030a16', color: '#ff0055' });
+      triggerDangerAlarm();
     }
   }
 </script>
