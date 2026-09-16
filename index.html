@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISLAMIC TRACKER & PORTFOLIO</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <style>
+    :root { --primary: #00ffd5; --accent: #008cff; --bg: #010611; --card-bg: rgba(2, 10, 24, 0.85); --text: #ffffff; --info-bg: rgba(4, 18, 38, 0.6); --info-border: #00ffd5; --rain-bg: linear-gradient(to bottom, #010611, #031024); --popup-bg: rgba(1, 6, 17, 0.95); --input-bg: rgba(0, 0, 0, 0.6); --input-color: #fff; }
+    body.light { --bg: #e8edf5; --card-bg: rgba(255, 255, 255, 0.85); --text: #1a1a2e; --info-bg: rgba(0, 140, 255, 0.05); --info-border: rgba(0, 140, 255, 0.3); --rain-bg: linear-gradient(to bottom, #c8dff0, #dce9f5); --popup-bg: rgba(240, 248, 255, 0.95); --input-bg: rgba(255, 255, 255, 0.9); --input-color: #1a1a2e; --primary: #0099cc; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', system-ui, -apple-system, sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+    body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 15px 10px 30px; min-height: 100vh; overflow-x: hidden; position: relative; }
+    .sky-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: var(--rain-bg); }
+    .top-header-icons { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 10px; z-index: 3; position: relative; }
+    .icon-circle { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; background: rgba(0, 255, 213, 0.08); cursor: pointer; backdrop-filter: blur(5px); }
+    .container { width: 100%; max-width: 450px; background: var(--card-bg); border: 2px solid var(--primary); border-radius: 30px; padding: 25px 18px; box-shadow: 0 0 30px rgba(0, 255, 213, 0.2); position: relative; z-index: 1; backdrop-filter: blur(10px); margin-top: 10px; }
+    .rgb-text { background: linear-gradient(45deg, #00ffd5, #008cff, #fffb00, #00ffd5); background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbGlow 6s linear infinite; font-weight: bold; }
+    @keyframes rgbGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    
+    /* মসজিদ স্টাইল ডিজিটাল ঘড়ি ও নামাজের সময়সূচী */
+    .prayer-schedule-box { background: linear-gradient(135deg, rgba(2,15,35,0.9), rgba(1,8,20,0.95)); border: 2px solid #00ffd5; border-radius: 20px; padding: 15px; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0,255,213,0.3); text-align: center; position: relative; }
+    .digital-clock { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: #00ffd5; text-shadow: 0 0 12px rgba(0,255,213,0.8); margin-bottom: 5px; }
+    .digital-date { font-size: 11px; color: #a0aec0; font-weight: 600; margin-bottom: 12px; letter-spacing: 1px; }
+    .prayer-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
+    .prayer-item { background: rgba(0,255,213,0.06); border: 1px solid rgba(0,255,213,0.3); border-radius: 10px; padding: 6px 2px; text-align: center; }
+    .prayer-name { font-size: 10px; font-weight: 800; color: #ffd700; margin-bottom: 3px; }
+    .prayer-time { font-size: 9px; color: #fff; font-family: 'Orbitron', sans-serif; }
+
+    .section-title { font-size: 14px; font-weight: 900; color: var(--primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+    .section-title::before { content: ''; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+    
+    .info-card { background: var(--info-bg); border: 1.5px solid var(--info-border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+    
+    /* নামাজের ট্র্যাকিং ফর্ম স্টাইল */
+    .tracker-box { border-radius: 18px; padding: 18px; background: var(--info-bg); border: 1.5px solid var(--primary); margin-bottom: 20px; }
+    .prayer-check-container { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; text-align: left; }
+    .prayer-checkbox-label { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,255,213,0.2); font-size: 13px; font-weight: 700; cursor: pointer; }
+    .prayer-checkbox-label input { width: 18px; height: 18px; accent-color: #00ffd5; cursor: pointer; }
+
+    .action-btn { width: 100%; background: linear-gradient(135deg, var(--primary), #008cff); border: none; color: #000; padding: 12px; border-radius: 25px; font-weight: 900; font-size: 13px; cursor: pointer; margin-top: 10px; box-shadow: 0 0 12px rgba(0, 255, 213, 0.4); }
+    .action-btn:active { transform: scale(0.96); }
+
+    /* লিডারবোর্ড ডিজাইন */
+    .leaderboard-container { background: rgba(0,0,0,0.4); border-radius: 14px; padding: 12px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(0,255,213,0.3); }
+    .leaderboard-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,213,0.05); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 12px; border-left: 3px solid #00ffd5; }
+
+    input, textarea { width: 100%; padding: 12px; margin: 8px 0 14px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--input-bg); color: var(--input-color); text-align: center; outline: none; font-weight: bold; }
+    
+    #adminLoginPopup, #adminPanel { position: fixed; inset: 0; background: var(--popup-bg); z-index: 9999; display: none; overflow-y: auto; padding: 20px; }
+    #adminLoginPopup { align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+    .hacker-card { background: #030a16; padding: 30px 22px; border-radius: 20px; border: 2px solid #00ffd5; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.3); position: relative; }
+    .admin-container { max-width: 550px; margin: 20px auto; background: var(--card-bg); border-radius: 20px; border: 2px solid var(--primary); padding: 20px; }
+    .footer-text { text-align: center; font-size: 12px; margin-top: 20px; opacity: 0.7; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<canvas class="sky-canvas" id="skyCanvas"></canvas>
+
+<div class="top-header-icons">
+  <div class="icon-circle" onclick="openAdmin()"><i class="fas fa-crown"></i></div>
+  <div class="icon-circle" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></div>
+</div>
+
+<!-- এডমিন লগইন পপআপ -->
+<div id="adminLoginPopup">
+  <div class="hacker-card">
+    <button onclick="closeAdminPopup()" style="position:absolute; top:12px; right:15px; background:none; border:none; color:#00ffd5; font-size:18px; cursor:pointer;"><i class="fas fa-times"></i></button>
+    <div class="rgb-text" style="font-size: 22px; font-weight: 900; margin-bottom: 10px;">ADMIN PANEL</div>
+    <input type="password" id="adminPass" placeholder="Enter Access Key..." onkeyup="if(event.key==='Enter') checkAdmin()">
+    <button onclick="checkAdmin()" class="action-btn" style="background: linear-gradient(135deg, #00ffd5, #008cff); color:#000;">GRANT ACCESS</button>
+  </div>
+</div>
+
+<!-- এডমিন প্যানেল ড্যাশবোর্ড -->
+<div id="adminPanel">
+  <div class="admin-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px;">
+      <h3 style="color:var(--primary);"><i class="fas fa-crown"></i> Admin Control Panel</h3>
+      <button onclick="closeAdminPanel()" style="background: red; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
+    </div>
+    <div style="margin-top: 20px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 10px;"><i class="fas fa-database"></i> All Submitted Records (Database)</h4>
+      <div id="adminAllLogsList" style="max-height: 350px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 12px;">
+        <p style="font-size: 12px; opacity: 0.7;">Loading all data...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- ইসলামিক নাশিদ বা অডিও লিংক -->
+  <audio id="bgm" loop preload="auto" style="display: none;"> 
+    <source src="https://raw.githubusercontent.com/kanazahid929/SIYAM._91/refs/heads/main/ssstik.io_1789556882824.mp3" type="audio/mp3"> 
+  </audio>
+
+  <!-- ১. মসজিদের ডিজিটাল ঘড়ি ও নামাজের সময়সূচী -->
+  <div class="prayer-schedule-box">
+    <div class="digital-clock" id="liveClock">00:00:00 AM</div>
+    <div class="digital-date" id="liveDate">Loading Date...</div>
+    <div style="font-size: 11px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">PRAYER TIMES (DHAKA & BD)</div>
+    <div class="prayer-grid">
+      <div class="prayer-item"><div class="prayer-name">ফজর</div><div class="prayer-time">04:35 AM</div></div>
+      <div class="prayer-item"><div class="prayer-name">যোহর</div><div class="prayer-time">12:05 PM</div></div>
+      <div class="prayer-item"><div class="prayer-name">আসর</div><div class="prayer-time">04:20 PM</div></div>
+      <div class="prayer-item"><div class="prayer-name">মাগরিব</div><div class="prayer-time">06:15 PM</div></div>
+      <div class="prayer-item"><div class="prayer-name">এশা</div><div class="prayer-time">07:35 PM</div></div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-bottom: 15px;">
+    <h1 class="rgb-text" style="font-size: 20px; font-weight: 900;">DAILY PRAYER TRACKER</h1>
+    <p style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Track your daily prayers and build your spiritual journey</p>
+  </div>
+
+  <!-- ২. নাম ও ৫ ওয়াক্ত নামাজের চেকবক্সসহ বাধ্যতামূলক ইনপুট বক্স -->
+  <div class="tracker-box">
+    <div class="rgb-text" style="font-size: 13px; font-weight: 900; margin-bottom: 10px; text-align: center;"><i class="fas fa-clipboard-check"></i> SUBMIT TODAY'S PRAYER</div>
+    
+    <label style="font-size: 11px; font-weight: bold; color: var(--primary);">Your Name (Required):</label>
+    <input type="text" id="trackerName" placeholder="Enter your full name..." style="margin-bottom: 10px;">
+
+    <label style="font-size: 11px; font-weight: bold; color: var(--primary);">নামাজ আদায় (Select Namaz):</label>
+    <div class="prayer-check-container">
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="ফজর"> ফজর (Fajr)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="যোহর"> যোহর (Dhuhr)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="আসর"> আসর (Asr)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="মাগরিব"> মাগরিব (Maghrib)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="এশা"> এশা (Isha)</label>
+    </div>
+
+    <button class="action-btn" onclick="submitPrayerData()"><i class="fas fa-paper-plane"></i> SUBMIT DATA</button>
+  </div>
+
+  <!-- ৩. প্রতিদিনের লিডারবোর্ড -->
+  <div class="section-title">TODAY'S LEADERBOARD</div>
+  <div class="leaderboard-container" id="dailyLeaderboardList">
+    <p style="font-size: 11px; opacity: 0.7; text-align: center;">Loading today's leaderboard...</p>
+  </div>
+
+  <div class="footer-text">
+    ISLAMIC TRACKER PORTAL 🌙✨
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  const firebaseConfig = { apiKey: "AIzaSyAyc3L1EepBzsOIM-gSui09RQpEmf4owf0", authDomain: "my-portfolio-a2d90.firebaseapp.com", databaseURL: "https://my-portfolio-a2d90-default-rtdb.firebaseio.com", projectId: "my-portfolio-a2d90", storageBucket: "my-portfolio-a2d90.firebasestorage.app", messagingSenderId: "922189130029", appId: "1:922189130029:web:92defd36acbda8c151cba4" };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  let isLightMode = false;
+  let isAdminLoggedIn = false;
+  let currentAdminPass = "if?nomore";
+
+  db.ref('settings/adminPass').on('value', snapshot => { if(snapshot.val()) currentAdminPass = snapshot.val(); });
+
+  // অডিও অটো پ্লে এবং ইউজার ইন্টারঅ্যাকশন হ্যান্ডেলিং
+  const audio = document.getElementById("bgm");
+  audio.volume = 0.6;
+  function triggerAudio() { audio.play().catch(() => { const playNow = () => { audio.play(); ['click', 'touchstart', 'scroll'].forEach(evt => window.removeEventListener(evt, playNow)); }; ['click', 'touchstart', 'scroll'].forEach(evt => window.addEventListener(evt, playNow)); }); }
+  window.addEventListener('DOMContentLoaded', triggerAudio);
+
+  // লাইভ ডিজিটাল ক্লক
+  function updateLiveClock() {
+    const now = new Date();
+    document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    document.getElementById('liveDate').innerText = now.toLocaleDateString('en-US', { timeZone: 'Asia/Dhaka', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  setInterval(updateLiveClock, 1000);
+  updateLiveClock();
+
+  // ব্যাকগ্রাউন্ড ক্যানভাস (রাতের আকাশ, মিটমিটে তারা ও সুন্দর চাঁদ)
+  const canvas = document.getElementById('skyCanvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function initStars() {
+    stars = [];
+    for(let i=0; i<120; i++) {
+      stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.5, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005 });
+    }
+  }
+  function animateSky() {
+    ctx.fillStyle = isLightMode ? '#e8edf5' : '#010611';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // সুন্দর চাঁদ আঁকা (যদি ডার্ক মোড হয়)
+    if(!isLightMode) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(canvas.width - 80, 80, 30, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#fffae6';
+      ctx.shadowBlur = 25;
+      ctx.shadowColor = '#00ffd5';
+      ctx.fill();
+      // চাঁদের ছায়া কাটার ইফেক্ট
+      ctx.beginPath();
+      ctx.arc(canvas.width - 70, 75, 27, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#010611';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // তারা আঁকা
+    stars.forEach(s => {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+      ctx.fillStyle = isLightMode ? `rgba(50,50,80, ${s.alpha})` : `rgba(255,255,255, ${s.alpha})`;
+      ctx.fill();
+      s.alpha += s.speed;
+      if(s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
+    });
+    requestAnimationFrame(animateSky);
+  }
+  initStars();
+  animateSky();
+
+  function toggleTheme() {
+    document.body.classList.toggle("light");
+    isLightMode = document.body.classList.contains("light");
+    document.getElementById("themeIcon").className = isLightMode ? "fas fa-sun" : "fas fa-moon";
+  }
+
+  // সাবমিশন ভ্যালিডেশন (নাম এবং অন্তত একটি ওয়াক্ত সিলেক্ট না করলে আটকে যাবে)
+  function submitPrayerData() {
+    const name = document.getElementById('trackerName').value.trim();
+    if(!name) {
+      Swal.fire({ title: 'NAME REQUIRED!', text: 'দয়া করে আপনার নাম লিখুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
+      return;
+    }
+    
+    const checkboxes = document.querySelectorAll('.p-check:checked');
+    if(checkboxes.length === 0) {
+      Swal.fire({ title: 'SELECT PRAYER!', text: 'কমপক্ষে ১টি ওয়াক্ত সিলেক্ট করুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
+      return;
+    }
+
+    let selectedPrayers = [];
+    checkboxes.forEach(cb => selectedPrayers.push(cb.value));
+
+    const todayDateStr = new Date().toDateString(); // প্রতিদিনের আলাদা করার জন্য ডেট স্ট্রিং
+
+    const recordData = {
+      name: name,
+      prayers: selectedPrayers,
+      count: selectedPrayers.length,
+      timestamp: Date.now(),
+      dateStr: todayDateStr,
+      timeFormatted: new Date().toLocaleTimeString()
+    };
+
+    db.ref('prayerRecords').push(recordData).then(() => {
+      document.getElementById('trackerName').value = '';
+      checkboxes.forEach(cb => cb.checked = false);
+      Swal.fire({ title: 'ALHAMDULILLAH ✓', text: 'আপনার নামাজের তথ্য সফলভাবে জমা হয়েছে!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  // প্রতিদিনের লিডারবোর্ড লোড করা
+  db.ref('prayerRecords').on('value', snapshot => {
+    const listDiv = document.getElementById('dailyLeaderboardList');
+    listDiv.innerHTML = '';
+    const data = snapshot.val();
+    
+    if(!data) {
+      listDiv.innerHTML = '<p style="font-size: 11px; opacity: 0.7; text-align: center;">আজ এখনও কেউ ডাটা সাবমিট করেনি।</p>';
+      return;
+    }
+
+    const todayStr = new Date().toDateString();
+    let todayRecords = [];
+
+    Object.keys(data).forEach(key => {
+      const item = data[key];
+      // শুধু আজকের সাবমিশনগুলো ফিল্টার করে লিডারবোর্ডে দেখানো হবে
+      if(item.dateStr === todayStr) {
+        todayRecords.push(item);
+      }
+    });
+
+    // বেশি ওয়াক্ত আদায়কারীকে উপরে রাখার জন্য সর্ট করা
+    todayRecords.sort((a, b) => b.count - a.count);
+
+    if(todayRecords.length === 0) {
+      listDiv.innerHTML = '<p style="font-size: 11px; opacity: 0.7; text-align: center;">আজকের দিনের কোনো লিডারবোর্ড ডাটা নেই।</p>';
+      return;
+    }
+
+    todayRecords.forEach((rec, idx) => {
+      const div = document.createElement('div');
+      div.className = 'leaderboard-item';
+      div.innerHTML = `
+        <div>
+          <strong>#${idx + 1} ${rec.name}</strong>
+          <div style="font-size: 10px; opacity: 0.8; margin-top:2px;">আদায়কৃত: ${rec.prayers.join(', ')}</div>
+        </div>
+        <div style="background: rgba(0,255,213,0.2); padding: 3px 8px; border-radius: 6px; font-weight: bold; color: var(--primary);">
+          ${rec.count}/5 ওয়াক্ত
+        </div>
+      `;
+      listDiv.appendChild(div);
+    });
+
+    // এডমিন প্যানেলের জন্যও সব ডাটা রেন্ডার করা
+    renderAdminAllLogs(data);
+  });
+
+  function renderAdminAllLogs(data) {
+    const adminDiv = document.getElementById('adminAllLogsList');
+    adminDiv.innerHTML = '';
+    const keys = Object.keys(data).reverse();
+    
+    keys.forEach(key => {
+      const item = data[key];
+      const div = document.createElement('div');
+      div.style.cssText = "background:rgba(0,255,213,0.05); border-left:3px solid #00ffd5; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; text-align:left;";
+      div.innerHTML = `
+        <strong style="color:var(--primary);">👤 ${item.name}</strong> <span style="font-size:10px; opacity:0.7; float:right;">📅 ${item.dateStr}</span>
+        <div style="margin-top:4px;">ওয়াক্তসমূহ: ${item.prayers ? item.prayers.join(', ') : ''}</div>
+        <button onclick="deleteRecord('${key}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-trash"></i> Delete</button>
+      `;
+      adminDiv.appendChild(div);
+    });
+  }
+
+  function deleteRecord(key) {
+    db.ref('prayerRecords/' + key).remove();
+  }
+
+  function openAdmin() {
+    if(isAdminLoggedIn) {
+      document.getElementById('adminPanel').style.display = 'block';
+    } else {
+      document.getElementById('adminLoginPopup').style.display = 'flex';
+    }
+  }
+  function closeAdminPopup() { document.getElementById('adminLoginPopup').style.display = 'none'; }
+  function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
+
+  function checkAdmin() {
+    const pass = document.getElementById('adminPass').value;
+    if(pass === currentAdminPass) {
+      isAdminLoggedIn = true;
+      document.getElementById('adminLoginPopup').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      document.getElementById('adminPass').value = '';
+      Swal.fire({ title: 'GRANTED!', text: 'Welcome Admin', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+    } else {
+      Swal.fire({ title: 'ACCESS DENIED!', text: 'Wrong Password!', icon: 'error', background: '#030a16', color: '#ff0055' });
+    }
+  }
+</script>
+</body>
+</html>
