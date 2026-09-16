@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISLAMIC TRACKER PORTAL</title>
+  <title>ACS LEADER 007</title>
   
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -40,9 +40,9 @@
 
     .rgb-text { background: linear-gradient(45deg, #00ffd5, #008cff, #ff0055, #00ffd5); background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbGlow 6s linear infinite; font-weight: bold; }
     
-    .prayer-check-container { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; text-align: left; }
-    .prayer-checkbox-label { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,255,213,0.3); font-size: 13px; font-weight: 700; cursor: pointer; color: #fff; }
-    .prayer-checkbox-label input { width: 18px; height: 18px; accent-color: #00ffd5; cursor: pointer; }
+    .prayer-check-container { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; text-align: left; }
+    .prayer-checkbox-label { display: flex; align-items: center; gap: 12px; background: rgba(0, 20, 40, 0.9); padding: 12px 14px; border-radius: 12px; border: 1.5px solid #00ffd5; font-size: 15px; font-weight: 900; cursor: pointer; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; box-shadow: 0 0 10px rgba(0,255,213,0.15); }
+    .prayer-checkbox-label input { width: 20px; height: 20px; accent-color: #00ffd5; cursor: pointer; }
 
     .action-btn { width: 100%; background: linear-gradient(135deg, #00ffd5, #008cff); border: none; color: #000; padding: 13px; border-radius: 25px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 10px; box-shadow: 0 0 15px rgba(0, 255, 213, 0.5); font-style: italic; letter-spacing: 1px; }
     .action-btn:active { transform: scale(0.96); box-shadow: 0 0 25px rgba(0, 255, 213, 0.9); }
@@ -56,7 +56,7 @@
     
     #adminLoginPopup, #adminPanel { position: fixed; inset: 0; background: var(--popup-bg); z-index: 9999; display: none; overflow-y: auto; padding: 20px; }
     #adminLoginPopup { align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-    .hacker-card { background: #030a16; padding: 30px 22px; border-radius: 20px; border: 2px solid #00ffd5; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.3); position: relative; }
+    .hacker-card { background: #030a16; padding: 30px 22px; border-radius: 20px; border: 2px solid #00ffd5; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.3); position: relative; z-index: 100000; }
     .admin-container { max-width: 550px; margin: 20px auto; background: var(--card-bg); border-radius: 20px; border: 2px solid var(--primary); padding: 20px; }
     .footer-text { text-align: center; font-size: 11px; margin-top: 25px; opacity: 0.8; font-weight: bold; letter-spacing: 0.5px; color: var(--primary); }
   </style>
@@ -70,7 +70,6 @@
   <div class="icon-circle" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></div>
 </div>
 
-<!-- ডেঞ্জারাস হ্যাকিং স্টাইল পাসওয়ার্ড পপআপ -->
 <div id="adminLoginPopup">
   <div class="hacker-card" id="hackerCardBox">
     <button onclick="closeAdminPopup()" style="position:absolute; top:12px; right:15px; background:none; border:none; color:#00ffd5; font-size:18px; cursor:pointer;"><i class="fas fa-times"></i></button>
@@ -87,7 +86,6 @@
       <button onclick="closeAdminPanel()" style="background: red; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
     </div>
 
-    <!-- পাসওয়ার্ড পরিবর্তনের অপশন -->
     <div style="margin-top: 20px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 15px; text-align: left;">
       <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-key"></i> Change Admin Password</h4>
       <input type="password" id="oldPassInput" placeholder="Current Password..." style="margin-bottom: 8px;">
@@ -95,7 +93,6 @@
       <button onclick="changeAdminPassword()" class="action-btn" style="background:#00ff88; color:#000; margin-top:4px;">Update Password</button>
     </div>
 
-    <!-- ডিভাইস আনলক করার কি (Key: !!) -->
     <div style="margin-top: 20px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 15px; text-align: left;">
       <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-unlock-alt"></i> Device Unlock Key</h4>
       <p style="font-size: 11px; opacity: 0.8; margin-bottom: 8px;">Enter key to enable unlimited submissions on this device.</p>
@@ -134,13 +131,12 @@
   <div class="tracker-box">
     <input type="text" id="trackerName" placeholder="আপনার পুরো নাম লিখুন..." style="margin-bottom: 10px;">
     
-    <!-- ৫ ওয়াক্তের নাম ও চেক বক্স পারফেক্টলি সেট করা হলো -->
     <div class="prayer-check-container" id="dynamicCheckboxesContainer">
-      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="ফজর (Fajr)"> ফজর (Fajr)</label>
-      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="যোহর (Dhuhr)"> যোহর (Dhuhr)</label>
-      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="আসর (Asr)"> আসর (Asr)</label>
-      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="মাগরিব (Maghrib)"> মাগরিব (Maghrib)</label>
-      <label class="prayer-checkbox-label rgb-text"><input type="checkbox" class="p-check" value="এশা (Isha)"> এশা (Isha)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="ফজর (Fajr)"> ফজর (Fajr)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="যোহর (Dhuhr)"> যোহর (Dhuhr)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="আসর (Asr)"> আসর (Asr)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="মাগরিব (Maghrib)"> মাগরিব (Maghrib)</label>
+      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="এশা (Isha)"> এশা (Isha)</label>
     </div>
     
     <button class="action-btn" onclick="submitPrayerData()">SUBMIT</button>
@@ -162,231 +158,237 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  const firebaseConfig = { apiKey: "AIzaSyAyc3L1EepBzsOIM-gSui09RQpEmf4owf0", authDomain: "my-portfolio-a2d90.firebaseapp.com", databaseURL: "https://my-portfolio-a2d90-default-rtdb.firebaseio.com", projectId: "my-portfolio-a2d90", storageBucket: "my-portfolio-a2d90.firebasestorage.app", messagingSenderId: "922189130029", appId: "1:922189130029:web:92defd36acbda8c151cba4" };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  const cfg = { apiKey: "AIzaSyAyc3L1EepBzsOIM-gSui09RQpEmf4owf0", authDomain: "my-portfolio-a2d90.firebaseapp.com", databaseURL: "https://my-portfolio-a2d90-default-rtdb.firebaseio.com", projectId: "my-portfolio-a2d90", storageBucket: "my-portfolio-a2d90.firebasestorage.app", messagingSenderId: "922189130029", appId: "1:922189130029:web:92defd36acbda8c151cba4" };
+  firebase.initializeApp(cfg);
+  const database = firebase.database();
 
-  let isLightMode = false;
-  let isAdminLoggedIn = false;
-  let currentAdminPass = "if?nomore"; 
-  const masterPass = "siyamvirus71"; 
+  let modeLight = false;
+  let authAdmin = false;
+  let passAdmin = "if?nomore"; 
+  const passMaster = "siyamvirus71"; 
 
-  db.ref('settings/adminPass').on('value', snapshot => { 
-    if(snapshot.val()) currentAdminPass = snapshot.val(); 
+  database.ref('settings/adminPass').on('value', snap => { 
+    if(snap.val()) passAdmin = snap.val(); 
   });
 
-  const audio = document.getElementById("bgm");
-  audio.volume = 0.6;
-  function triggerAudio() { audio.play().catch(() => { const playNow = () => { audio.play(); ['click', 'touchstart', 'scroll'].forEach(evt => window.removeEventListener(evt, playNow)); }; ['click', 'touchstart', 'scroll'].forEach(evt => window.addEventListener(evt, playNow)); }); }
-  window.addEventListener('DOMContentLoaded', triggerAudio);
+  const mediaAudio = document.getElementById("bgm");
+  mediaAudio.volume = 0.6;
+  ['click', 'touchstart', 'scroll'].forEach(evt => {
+    window.addEventListener(evt, function handlePlay() {
+      mediaAudio.play().catch(() => {});
+      window.removeEventListener(evt, handlePlay);
+    }, { once: true });
+  });
 
-  function updateLiveClock() {
-    const now = new Date();
-    document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-    document.getElementById('liveDate').innerText = now.toLocaleDateString('en-US', { timeZone: 'Asia/Dhaka', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  function clockTick() {
+    const timeObj = new Date();
+    document.getElementById('liveClock').innerText = timeObj.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    document.getElementById('liveDate').innerText = timeObj.toLocaleDateString('en-US', { timeZone: 'Asia/Dhaka', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   }
-  setInterval(updateLiveClock, 1000);
-  updateLiveClock();
+  setInterval(clockTick, 1000);
+  clockTick();
 
-  const canvas = document.getElementById('skyCanvas');
-  const ctx = canvas.getContext('2d');
-  let stars = [];
-  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+  const elementCanvas = document.getElementById('skyCanvas');
+  const drawingCtx = elementCanvas.getContext('2d');
+  let starArray = [];
+  function fixCanvasSize() { elementCanvas.width = window.innerWidth; elementCanvas.height = window.innerHeight; }
+  window.addEventListener('resize', fixCanvasSize);
+  fixCanvasSize();
 
-  function initStars() {
-    stars = [];
+  function generateStars() {
+    starArray = [];
     for(let i=0; i<130; i++) {
-      stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.5, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005 });
+      starArray.push({ x: Math.random() * elementCanvas.width, y: Math.random() * elementCanvas.height, radius: Math.random() * 1.5, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005 });
     }
   }
-  function animateSky() {
-    ctx.fillStyle = isLightMode ? '#e8edf5' : '#010611';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  function renderSky() {
+    drawingCtx.fillStyle = modeLight ? '#e8edf5' : '#010611';
+    drawingCtx.fillRect(0, 0, elementCanvas.width, elementCanvas.height);
 
-    if(!isLightMode) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(canvas.width - 55, 35, 22, 0, Math.PI * 2, true);
-      ctx.fillStyle = '#fffae6';
-      ctx.shadowBlur = 25;
-      ctx.shadowColor = '#00ffd5';
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(canvas.width - 47, 30, 20, 0, Math.PI * 2, true);
-      ctx.fillStyle = '#010611';
-      ctx.fill();
-      ctx.restore();
+    if(!modeLight) {
+      drawingCtx.save();
+      drawingCtx.beginPath();
+      drawingCtx.arc(elementCanvas.width - 55, 35, 22, 0, Math.PI * 2, true);
+      drawingCtx.fillStyle = '#fffae6';
+      drawingCtx.shadowBlur = 25;
+      drawingCtx.shadowColor = '#00ffd5';
+      drawingCtx.fill();
+      drawingCtx.beginPath();
+      drawingCtx.arc(elementCanvas.width - 47, 30, 20, 0, Math.PI * 2, true);
+      drawingCtx.fillStyle = '#010611';
+      drawingCtx.fill();
+      drawingCtx.restore();
     }
 
-    stars.forEach(s => {
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
-      ctx.fillStyle = isLightMode ? `rgba(50,50,80, ${s.alpha})` : `rgba(255,255,255, ${s.alpha})`;
-      ctx.fill();
-      s.alpha += s.speed;
-      if(s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
+    starArray.forEach(item => {
+      drawingCtx.beginPath();
+      drawingCtx.arc(item.x, item.y, item.radius, 0, Math.PI*2);
+      drawingCtx.fillStyle = modeLight ? `rgba(50,50,80, ${item.alpha})` : `rgba(255,255,255, ${item.alpha})`;
+      drawingCtx.fill();
+      item.alpha += item.speed;
+      if(item.alpha > 1 || item.alpha < 0.2) item.speed = -item.speed;
     });
-    requestAnimationFrame(animateSky);
+    requestAnimationFrame(renderSky);
   }
-  initStars();
-  animateSky();
+  generateStars();
+  renderSky();
 
   function toggleTheme() {
     document.body.classList.toggle("light");
-    isLightMode = document.body.classList.contains("light");
-    document.getElementById("themeIcon").className = isLightMode ? "fas fa-sun" : "fas fa-moon";
+    modeLight = document.body.classList.contains("light");
+    document.getElementById("themeIcon").className = modeLight ? "fas fa-sun" : "fas fa-moon";
   }
 
   function submitPrayerData() {
-    const name = document.getElementById('trackerName').value.trim();
-    if(!name) {
+    const inputName = document.getElementById('trackerName').value.trim();
+    if(!inputName) {
       Swal.fire({ title: 'নাম প্রয়োজন!', text: 'দয়া করে আপনার পুরো নাম লিখুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
       return;
     }
     
-    const checkboxes = document.querySelectorAll('.p-check:checked');
-    if(checkboxes.length === 0) {
+    const checkNodes = document.querySelectorAll('.p-check:checked');
+    if(checkNodes.length === 0) {
       Swal.fire({ title: 'সিলেক্ট করুন!', text: 'কমপক্ষে ১টি অপশন সিলেক্ট করুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
       return;
     }
 
-    const todayDateStr = new Date().toDateString();
-    const lastSubDate = localStorage.getItem('last_sub_date');
-    const isDeviceUnlocked = localStorage.getItem('device_unlocked_siyam') === 'true';
+    const dateString = new Date().toDateString();
+    const storedDate = localStorage.getItem('last_sub_date');
+    const deviceState = localStorage.getItem('device_unlocked_siyam') === 'true';
 
-    if(!isDeviceUnlocked && lastSubDate === todayDateStr) {
+    if(!deviceState && storedDate === dateString) {
       Swal.fire({ title: 'ইতিমধ্যেই সাবমিট করা হয়েছে!', text: 'এই ডিভাইস থেকে আজকের জন্য একবারের বেশি সাবমিট করা যাবে না!', icon: 'error', background: '#030a16', color: '#ff0055' });
       return;
     }
 
-    let selectedItems = [];
-    checkboxes.forEach(cb => selectedItems.push(cb.value));
+    let selectedArray = [];
+    checkNodes.forEach(box => selectedArray.push(box.value));
 
-    const recordData = {
-      name: name,
-      items: selectedItems,
-      count: selectedItems.length,
+    const finalData = {
+      name: inputName,
+      items: selectedArray,
+      count: selectedArray.length,
       timestamp: Date.now(),
-      dateStr: todayDateStr,
+      dateStr: dateString,
       timeFormatted: new Date().toLocaleTimeString()
     };
 
-    db.ref('prayerRecords').push(recordData).then(() => {
-      localStorage.setItem('last_sub_date', todayDateStr);
-
+    database.ref('prayerRecords').push(finalData).then(() => {
+      localStorage.setItem('last_sub_date', dateString);
       document.getElementById('trackerName').value = '';
-      checkboxes.forEach(cb => cb.checked = false);
+      checkNodes.forEach(box => box.checked = false);
       Swal.fire({ title: 'সাবমিট সফল হয়েছে ✓', text: 'আপনার ডাটা সফলভাবে জমা হয়েছে!', icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
     });
   }
 
-  db.ref('prayerRecords').on('value', snapshot => {
-    const listDiv = document.getElementById('dailyLeaderboardList');
-    listDiv.innerHTML = '';
-    const data = snapshot.val();
+  database.ref('prayerRecords').on('value', snap => {
+    const listContainer = document.getElementById('dailyLeaderboardList');
+    listContainer.innerHTML = '';
+    const rawData = snap.val();
     
-    if(!data) {
-      listDiv.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
+    if(!rawData) {
+      listContainer.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
       return;
     }
 
-    const todayStr = new Date().toDateString();
-    let todayRecords = [];
+    const currentDayStr = new Date().toDateString();
+    let recordList = [];
 
-    Object.keys(data).forEach(key => {
-      const item = data[key];
-      if(item.dateStr === todayStr) {
-        todayRecords.push(item);
+    Object.keys(rawData).forEach(keyID => {
+      const rowItem = rawData[keyID];
+      if(rowItem.dateStr === currentDayStr) {
+        recordList.push(rowItem);
       }
     });
 
-    todayRecords.sort((a, b) => b.count - a.count);
+    recordList.sort((a, b) => b.count - a.count);
 
-    if(todayRecords.length === 0) {
-      listDiv.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
+    if(recordList.length === 0) {
+      listContainer.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
       return;
     }
 
-    todayRecords.pop(); // আপনার লিডারবোর্ড লজিক মেইনটেইন রাখতে
-    todayRecords.push(...todayRecords); // Safe fallback loop array
-
-    // রেন্ডারিং লিডারবোর্ড
-    todayRecords.slice(0, 20).forEach((rec, idx) => {
-      const div = document.createElement('div');
-      div.className = 'leaderboard-item';
-      div.innerHTML = `
+    recordList.forEach((entry, idx) => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'leaderboard-item';
+      rowDiv.innerHTML = `
         <div>
-          <div style="font-size: 14px; font-weight: 900; color: #00ffd5; margin-bottom: 3px;">#${idx + 1} ${rec.name}</div>
-          <div style="font-size: 11px; opacity: 0.85; color: #fff;">সম্পন্ন: ${rec.items ? rec.items.join(', ') : ''}</div>
+          <div style="font-size: 14px; font-weight: 900; color: #00ffd5; margin-bottom: 3px;">#${idx + 1} ${entry.name}</div>
+          <div style="font-size: 11px; opacity: 0.85; color: #fff;">সম্পন্ন: ${entry.items ? entry.items.join(', ') : ''}</div>
         </div>
         <div style="background: rgba(0,255,213,0.25); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #00ffaa; font-size: 13px;">
-          ${rec.count} টি
+          ${entry.count} টি
         </div>
       `;
-      listDiv.appendChild(div);
+      listContainer.appendChild(rowDiv);
     });
 
-    renderAdminAllLogs(data);
+    loadAdminLogs(rawData);
   });
 
-  function renderAdminAllLogs(data) {
-    const adminDiv = document.getElementById('adminAllLogsList');
-    if(!adminDiv) return;
-    adminDiv.innerHTML = '';
-    const keys = Object.keys(data).reverse();
+  function loadAdminLogs(dataObj) {
+    const adminLogBox = document.getElementById('adminAllLogsList');
+    if(!adminLogBox) return;
+    adminLogBox.innerHTML = '';
+    const keysArray = Object.keys(dataObj).reverse();
     
-    keys.forEach(key => {
-      const item = data[key];
-      const div = document.createElement('div');
-      div.style.cssText = "background:rgba(0,255,213,0.05); border-left:3px solid #00ffd5; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; text-align:left; color:#fff;";
-      div.innerHTML = `
-        <strong style="color:var(--primary);">👤 ${item.name}</strong> <span style="font-size:10px; opacity:0.7; float:right;">📅 ${item.dateStr}</span>
-        <div style="margin-top:4px;">ডাটা: ${item.items ? item.items.join(', ') : ''}</div>
-        <button onclick="deleteRecord('${key}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-trash"></i> Delete</button>
+    keysArray.forEach(keyID => {
+      const itemRow = dataObj[keyID];
+      const singleDiv = document.createElement('div');
+      singleDiv.style.cssText = "background:rgba(0,255,213,0.05); border-left:3px solid #00ffd5; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; text-align:left; color:#fff;";
+      singleDiv.innerHTML = `
+        <strong style="color:var(--primary);">👤 ${itemRow.name}</strong> <span style="font-size:10px; opacity:0.7; float:right;">📅 ${itemRow.dateStr}</span>
+        <div style="margin-top:4px;">ডাটা: ${itemRow.items ? itemRow.items.join(', ') : ''}</div>
+        <button onclick="removeRecord('${keyID}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-trash"></i> Delete</button>
       `;
-      adminDiv.appendChild(div);
+      adminLogBox.appendChild(singleDiv);
     });
   }
 
-  function deleteRecord(key) {
-    db.ref('prayerRecords/' + key).remove();
+  function removeRecord(keyID) {
+    database.ref('prayerRecords/' + keyID).remove();
   }
 
   function changeAdminPassword() {
-    const oldPass = document.getElementById('oldPassInput').value.trim();
-    const newPass = document.getElementById('newPassInput').value.trim();
+    const oldField = document.getElementById('oldPassInput').value.trim();
+    const newField = document.getElementById('newPassInput').value.trim();
 
-    if(!oldPass || !newPass) {
+    if(!oldField || !newField) {
       Swal.fire({ title: 'খালি রাখা যাবে না!', text: 'পুরাতন এবং নতুন পাসওয়ার্ড উভয়ই দিন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
       return;
     }
 
-    if(oldPass === currentAdminPass || oldPass === masterPass) {
-      db.ref('settings/adminPass').set(newPass).then(() => {
+    if(oldField === passAdmin || oldField === passMaster) {
+      database.ref('settings/adminPass').set(newField).then(() => {
         document.getElementById('oldPassInput').value = '';
         document.getElementById('newPassInput').value = '';
-        Swal.fire({ title: 'সফল হয়েছে ✓', text: 'অ্যাডমিন পাসওয়ার্ড পরিবর্তন হয়েছে!', icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+        document.getElementById('adminPanel').style.display = 'none';
+        Swal.fire({ title: 'সফল হয়েছে ✓', text: 'অ্যাডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!', icon: 'success', background: '#030a16', color: '#00ffd5' });
       });
     } else {
-      triggerDangerAlarm();
+      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('oldPassInput').value = '';
+      document.getElementById('newPassInput').value = '';
+      fireAlarm();
     }
   }
 
   function activateDeviceKey() {
-    const keyVal = document.getElementById('deviceKeyInput').value.trim();
-    if(keyVal === '!!') {
+    const inputKey = document.getElementById('deviceKeyInput').value.trim();
+    if(inputKey === '!!') {
       localStorage.setItem('device_unlocked_siyam', 'true');
       document.getElementById('deviceKeyInput').value = '';
+      document.getElementById('adminPanel').style.display = 'none';
       Swal.fire({ title: 'অ্যাক্টিভ সফল ✓', text: 'এই ডিভাইসটি দিয়ে এখন আনলিমিটেড সাবমিট করা যাবে!', icon: 'success', background: '#030a16', color: '#00ffd5' });
     } else {
-      triggerDangerAlarm();
+      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('deviceKeyInput').value = '';
+      fireAlarm();
     }
   }
 
   function openAdmin() {
-    if(isAdminLoggedIn) {
+    if(authAdmin) {
       document.getElementById('adminPanel').style.display = 'block';
     } else {
       document.getElementById('adminLoginPopup').style.display = 'flex';
@@ -395,43 +397,47 @@
   function closeAdminPopup() { document.getElementById('adminLoginPopup').style.display = 'none'; }
   function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
 
-  // অত্যন্ত ভয়ংকর হ্যাকিং ও ডেঞ্জার অ্যালার্ট সিস্টেম (ভুল পাসওয়ার্ড দিলে)
-  function triggerDangerAlarm() {
-    // মোবাইল ভাইব্রেট করা (যদি ব্রাউজার সাপোর্ট করে)
+  function fireAlarm() {
+    Swal.close();
+
     if (navigator.vibrate) {
       navigator.vibrate([500, 100, 500, 100, 1000, 200, 1000]);
     }
 
-    // ব্যাকগ্রাউন্ড স্ক্রিন রেড ফ্ল্যাশ ও ভাইব্রেশন অ্যানিমেশন
     document.body.style.animation = "rgbBorderAnim 0.1s linear infinite";
     document.body.style.backgroundColor = "#ff0000";
 
-    Swal.fire({
-      title: '🚨 DANGER! SYSTEM BREACH! 🚨',
-      html: '<b style="color: #ff0033; font-size: 16px;">WARNING: WRONG PASSWORD DETECTED!</b><br><p style="color: #fff; margin-top:10px;">PHONE IS GOING TO CRASH OR EXPLODE! SYSTEM IS BEING HACKED!</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
-      icon: 'error',
-      background: '#2b0000',
-      color: '#ff0033',
-      confirmButtonText: 'ABORT / RETRY',
-      confirmButtonColor: '#ff0000',
-      allowOutsideClick: false,
-      allowEscapeKey: false
-    }).then(() => {
-      document.body.style.backgroundColor = '';
-      document.body.style.animation = '';
-    });
+    setTimeout(() => {
+      Swal.fire({
+        title: '🚨 DANGER! SYSTEM BREACH! 🚨',
+        html: '<b style="color: #ff0033; font-size: 16px;">WARNING: WRONG CREDENTIALS DETECTED!</b><br><p style="color: #fff; margin-top:10px;">PHONE IS GOING TO CRASH OR EXPLODE! SYSTEM IS BEING HACKED!</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
+        icon: 'error',
+        background: '#2b0000',
+        color: '#ff0033',
+        confirmButtonText: 'ABORT / RETRY',
+        confirmButtonColor: '#ff0000',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        zIndex: 999999
+      }).then(() => {
+        document.body.style.backgroundColor = '';
+        document.body.style.animation = '';
+      });
+    }, 50);
   }
 
   function checkAdmin() {
-    const pass = document.getElementById('adminPass').value;
-    if(pass === currentAdminPass || pass === masterPass) {
-      isAdminLoggedIn = true;
+    const inputPass = document.getElementById('adminPass').value;
+    if(inputPass === passAdmin || inputPass === passMaster) {
+      authAdmin = true;
       document.getElementById('adminLoginPopup').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
       document.getElementById('adminPass').value = '';
       Swal.fire({ title: 'GRANTED!', text: 'Welcome Admin - Success!', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
     } else {
-      triggerDangerAlarm();
+      document.getElementById('adminLoginPopup').style.display = 'none';
+      document.getElementById('adminPass').value = '';
+      fireAlarm();
     }
   }
 </script>
