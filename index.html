@@ -3,43 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACS LEADER 007</title>
+  <title>ALLAH THE ALMIGHTY - Masjid LED Display</title>
   
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Orbitron:wght@600;800;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <style>
-    :root { --primary: #00ffd5; --accent: #008cff; --bg: #010611; --card-bg: rgba(2, 10, 24, 0.95); --text: #ffffff; --popup-bg: rgba(1, 6, 17, 0.96); --input-bg: rgba(0, 0, 0, 0.7); --input-color: #fff; }
-    body.light { --bg: #e8edf5; --card-bg: rgba(255, 255, 255, 0.95); --text: #1a1a2e; --popup-bg: rgba(240, 248, 255, 0.96); --input-bg: rgba(255, 255, 255, 0.9); --input-color: #1a1a2e; --primary: #0099cc; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', system-ui, -apple-system, sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+    :root { --primary: #00ffd5; --accent: #008cff; --bg: #010409; --card-bg: rgba(2, 10, 24, 0.96); --text: #ffffff; --popup-bg: rgba(1, 6, 17, 0.96); --input-bg: rgba(0, 0, 0, 0.7); --input-color: #fff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', system-ui, -apple-system, sans-serif; }
     body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 15px 10px 40px; min-height: 100vh; overflow-x: hidden; position: relative; }
     .sky-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
     
-    .top-header-icons { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 10px; z-index: 3; position: relative; }
+    .top-header-icons { width: 100%; max-width: 480px; display: flex; justify-content: flex-start; align-items: center; padding: 0 10px; margin-bottom: 5px; z-index: 3; position: relative; }
     .icon-circle { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 16px; background: rgba(0, 255, 213, 0.1); cursor: pointer; backdrop-filter: blur(5px); }
-    .container { width: 100%; max-width: 450px; background: var(--card-bg); border: 2px solid var(--primary); border-radius: 30px; padding: 22px 16px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.25); position: relative; z-index: 1; backdrop-filter: blur(12px); margin-top: 10px; }
+    
+    /* বক্সটি আরও নিচে নামানো হয়েছে যাতে আকাশ অনেক বড় দেখায় */
+    .container { width: 100%; max-width: 480px; background: var(--card-bg); border: 2px solid var(--primary); border-radius: 25px; padding: 22px 16px; box-shadow: 0 0 40px rgba(0, 255, 213, 0.3); position: relative; z-index: 1; backdrop-filter: blur(12px); margin-top: 65px; }
     
     @keyframes rgbGlow { 0% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(180deg); } 100% { filter: hue-rotate(360deg); } }
     @keyframes rgbBorderAnim { 0% { border-color: #ff0055; box-shadow: 0 0 15px rgba(255,0,85,0.4); } 33% { border-color: #00ffd5; box-shadow: 0 0 15px rgba(0,255,213,0.4); } 66% { border-color: #7a00ff; box-shadow: 0 0 12px rgba(122,0,255,0.4); } 100% { border-color: #ff0055; box-shadow: 0 0 15px rgba(255,0,85,0.4); } }
 
-    .rgb-slim-box { background: rgba(2, 8, 20, 0.85); border: 2.5px solid #00ffd5; border-radius: 20px; padding: 16px; text-align: center; margin-bottom: 20px; animation: rgbBorderAnim 6s linear infinite; }
-    .tracker-box { border-radius: 20px; padding: 18px; background: rgba(4, 18, 38, 0.6); border: 2.5px solid #00ffd5; margin-bottom: 20px; animation: rgbBorderAnim 6s linear infinite; }
-
-    .mosque-header-title { font-size: 14px; font-weight: 900; color: #00ffaa; letter-spacing: 1px; margin-bottom: 6px; text-shadow: 0 0 10px rgba(0,255,170,0.6); }
-    .digital-clock-main { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900; color: #ff2255; text-shadow: 0 0 15px rgba(255,34,85,0.8); margin-bottom: 4px; }
-    .digital-date-sub { font-family: 'Orbitron', sans-serif; font-size: 12px; color: #00ffcc; font-weight: 700; margin-bottom: 12px; text-shadow: 0 0 8px rgba(0,255,204,0.5); }
+    /* --- SHARP RECTANGULAR LED HARDWARE BOARD --- */
+    .masjid-hardware-board {
+      background: radial-gradient(circle, #021e14 0%, #000302 100%);
+      border: 4px solid #00ff88;
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: inset 0 0 35px rgba(0,255,136,0.35), 0 0 30px rgba(0,255,136,0.3);
+      position: relative;
+      overflow: hidden;
+    }
     
-    .prayer-time-table { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-    .prayer-time-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,213,0.06); border: 1px solid rgba(0,255,213,0.2); padding: 8px 12px; border-radius: 10px; }
-    .p-name-led { font-size: 13px; font-weight: 900; color: #ffcc00; text-shadow: 0 0 8px rgba(255,204,0,0.5); }
-    .p-time-led { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900; color: #00ffaa; text-shadow: 0 0 8px rgba(0,255,170,0.5); }
+    .masjid-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px; }
+    .circle-badge { width: 34px; height: 34px; border: 2px solid #ffcc00; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: 'Amiri', serif; font-size: 13px; color: #ffcc00; background: rgba(255,204,0,0.1); text-shadow: 0 0 6px rgba(255,204,0,0.8); }
+    
+    .masjid-title-arabic { font-family: 'Amiri', serif; font-size: 18px; color: #ffcc00; text-shadow: 0 0 10px rgba(255,204,0,0.7); }
+    .masjid-title-main { font-size: 16px; font-weight: 900; color: #00ffaa; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,170,0.8); margin-top: 4px; }
+    .masjid-sub-tag { font-size: 11px; font-weight: 700; color: #ff3366; text-shadow: 0 0 6px rgba(255,51,102,0.6); margin-bottom: 10px; }
+
+    /* RED LED CLOCK MATRIX */
+    .red-led-box {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px inset rgba(255, 0, 68, 0.6);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 20px rgba(255,0,0,0.6);
+    }
+    .red-time-main { font-family: 'Orbitron', sans-serif; font-size: 34px; font-weight: 900; color: #ff1133; text-shadow: 0 0 15px rgba(255,17,51,0.9), 0 0 30px rgba(255,17,51,0.5); letter-spacing: 2px; }
+    
+    .red-date-row { display: flex; justify-content: center; gap: 15px; margin-top: 6px; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: #ff1133; text-shadow: 0 0 8px rgba(255,17,51,0.7); }
+    .date-item span { font-size: 10px; color: #00ffaa; display: block; font-family: 'Outfit', sans-serif; }
+
+    /* PRAYER SCHEDULE TABLE */
+    .prayer-table-grid { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .p-row-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.25); padding: 8px 12px; border-radius: 4px; }
+    .p-name-green { font-size: 13px; font-weight: 900; color: #00ffaa; text-shadow: 0 0 8px rgba(0,255,170,0.6); }
+    .p-arabic-box { font-family: 'Amiri', serif; font-size: 11px; color: #ffcc00; background: rgba(255,204,0,0.1); padding: 2px 8px; border-radius: 3px; border: 1px solid rgba(255,204,0,0.3); }
+    .p-time-red { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #ff1133; text-shadow: 0 0 10px rgba(255,17,51,0.8); }
+
+    .extra-bottom-row { display: flex; justify-content: space-between; margin-top: 10px; gap: 6px; }
+    .extra-box { flex: 1; background: rgba(255,0,85,0.1); border: 1px solid rgba(255,0,85,0.4); border-radius: 4px; padding: 6px; text-align: center; }
+    .extra-title { font-size: 10px; color: #ffcc00; font-weight: bold; }
+    .extra-val { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: #ff1133; text-shadow: 0 0 8px rgba(255,17,51,0.6); }
+
+    .marquee-container { background: rgba(255, 204, 0, 0.1); border-top: 1px dashed #ffcc00; border-bottom: 1px dashed #ffcc00; margin-top: 12px; padding: 6px 0; overflow: hidden; white-space: nowrap; }
+    .marquee-text { display: inline-block; font-size: 12px; font-weight: bold; color: #ffcc00; text-shadow: 0 0 8px rgba(255,204,0,0.5); animation: marqueeAnim 18s linear infinite; }
+    @keyframes marqueeAnim { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
     .rgb-text { background: linear-gradient(45deg, #00ffd5, #008cff, #ff0055, #00ffd5); background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbGlow 6s linear infinite; font-weight: bold; }
     
+    .tracker-box { border-radius: 20px; padding: 18px; background: rgba(4, 18, 38, 0.6); border: 2.5px solid #00ffd5; margin-bottom: 20px; animation: rgbBorderAnim 6s linear infinite; }
     .prayer-check-container { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; text-align: left; }
     .prayer-checkbox-label { display: flex; align-items: center; gap: 12px; background: rgba(0, 20, 40, 0.9); padding: 12px 14px; border-radius: 12px; border: 1.5px solid #00ffd5; font-size: 15px; font-weight: 900; cursor: pointer; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; box-shadow: 0 0 10px rgba(0,255,213,0.15); }
     .prayer-checkbox-label input { width: 20px; height: 20px; accent-color: #00ffd5; cursor: pointer; }
@@ -47,12 +87,15 @@
     .action-btn { width: 100%; background: linear-gradient(135deg, #00ffd5, #008cff); border: none; color: #000; padding: 13px; border-radius: 25px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 10px; box-shadow: 0 0 15px rgba(0, 255, 213, 0.5); font-style: italic; letter-spacing: 1px; }
     .action-btn:active { transform: scale(0.96); box-shadow: 0 0 25px rgba(0, 255, 213, 0.9); }
 
+    .info-card-box { background: rgba(4, 18, 38, 0.6); border: 2px solid #00ffd5; border-radius: 20px; padding: 15px; margin-top: 20px; text-align: left; animation: rgbBorderAnim 6s linear infinite; }
+    .info-card-title { font-size: 14px; font-weight: 900; color: #ffcc00; margin-bottom: 8px; text-shadow: 0 0 8px rgba(255,204,0,0.4); display: flex; align-items: center; gap: 8px; }
+    .info-card-content { font-size: 12px; line-height: 1.6; color: #fff; opacity: 0.95; white-space: pre-line; }
+
     .leaderboard-wrapper { background: linear-gradient(135deg, rgba(2,12,28,0.95), rgba(1,6,17,0.98)); border: 2.5px solid #00ffd5; border-radius: 20px; padding: 15px; margin-top: 20px; box-shadow: 0 0 25px rgba(0,255,213,0.25); animation: rgbBorderAnim 6s linear infinite; }
     .leaderboard-container { max-height: 250px; overflow-y: auto; margin-top: 10px; padding-right: 4px; }
-    
     .leaderboard-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,213,0.08); padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid #00ffd5; box-shadow: 0 0 10px rgba(0,255,213,0.1); }
 
-    input, select { width: 100%; padding: 12px; margin: 6px 0 12px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--input-bg); color: var(--input-color); text-align: center; outline: none; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 12px; border-radius: 12px; border: 1.5px solid var(--primary); background: var(--input-bg); color: var(--input-color); text-align: center; outline: none; font-weight: bold; }
     
     #adminLoginPopup, #adminPanel { position: fixed; inset: 0; background: var(--popup-bg); z-index: 9999; display: none; overflow-y: auto; padding: 20px; }
     #adminLoginPopup { align-items: center; justify-content: center; backdrop-filter: blur(8px); }
@@ -67,7 +110,6 @@
 
 <div class="top-header-icons">
   <div class="icon-circle" onclick="openAdmin()"><i class="fas fa-crown"></i></div>
-  <div class="icon-circle" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></div>
 </div>
 
 <div id="adminLoginPopup">
@@ -86,59 +128,109 @@
       <button onclick="closeAdminPanel()" style="background: red; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
     </div>
 
-    <div style="margin-top: 20px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 15px; text-align: left;">
-      <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-key"></i> Change Admin Password</h4>
-      <input type="password" id="oldPassInput" placeholder="Current Password..." style="margin-bottom: 8px;">
-      <input type="password" id="newPassInput" placeholder="New Password..." style="margin-bottom: 8px;">
-      <button onclick="changeAdminPassword()" class="action-btn" style="background:#00ff88; color:#000; margin-top:4px;">Update Password</button>
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 6px;"><i class="fas fa-key"></i> Change Admin Password</h4>
+      <input type="password" id="oldPassInput" placeholder="Current Password..." style="margin-bottom: 6px;">
+      <input type="password" id="newPassInput" placeholder="New Password..." style="margin-bottom: 6px;">
+      <button onclick="changeAdminPassword()" class="action-btn" style="background:#00ff88; color:#000; margin-top:2px;">Update Password</button>
     </div>
 
-    <div style="margin-top: 20px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 15px; text-align: left;">
-      <h4 style="color:var(--primary); margin-bottom: 8px;"><i class="fas fa-unlock-alt"></i> Device Unlock Key</h4>
-      <p style="font-size: 11px; opacity: 0.8; margin-bottom: 8px;">Enter key to enable unlimited submissions on this device.</p>
-      <input type="text" id="deviceKeyInput" placeholder="Enter Key (e.g. !!)" style="margin-bottom: 8px;">
-      <button onclick="activateDeviceKey()" class="action-btn" style="background:#008cff; color:#fff; margin-top:4px;">Activate Device</button>
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 6px;"><i class="fas fa-music"></i> Background Audio Changer</h4>
+      <input type="text" id="audioLinkInput" placeholder="Enter direct .mp3 URL..." style="margin-bottom: 6px;">
+      <button onclick="updateBackgroundAudio()" class="action-btn" style="background:#ff9900; color:#000; margin-top:2px;">Update Audio 🎵</button>
     </div>
 
-    <div style="margin-top: 20px; text-align: left;">
-      <h4 style="color:var(--primary); margin-bottom: 10px;"><i class="fas fa-database"></i> Permanent Database Records</h4>
-      <div id="adminAllLogsList" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 12px;">
-        <p style="font-size: 12px; opacity: 0.7;">Loading all data smoothly...</p>
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 6px;"><i class="fas fa-bullhorn"></i> Scrolling Notice / Message</h4>
+      <input type="text" id="marqueeTextInput" placeholder="Type scrolling message here..." style="margin-bottom: 6px;">
+      <button onclick="updateMarqueeNotice()" class="action-btn" style="background:#00ffcc; color:#000; margin-top:2px;">Save Scrolling Notice</button>
+    </div>
+
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 6px;"><i class="fas fa-bell"></i> Edit Notification</h4>
+      <textarea id="editNotificationText" rows="2" placeholder="Write notification here..."></textarea>
+      <button onclick="updateNotification()" class="action-btn" style="background:#ffcc00; color:#000; margin-top:2px;">Save Notification</button>
+    </div>
+
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary); margin-bottom: 6px;"><i class="fas fa-bolt"></i> New Create ⚡ (Multi Info Boxes)</h4>
+      <input type="text" id="newCustomBoxTitle" placeholder="Box Title" style="margin-bottom: 6px;">
+      <textarea id="newCustomBoxContent" rows="3" placeholder="Box Content..." style="margin-bottom: 6px;"></textarea>
+      <button onclick="createNewInfoBox()" class="action-btn" style="background: linear-gradient(135deg, #ff0055, #ffcc00); color:#fff; margin-top:2px;">Create New Box ⚡</button>
+      <div style="margin-top: 10px;">
+        <span style="font-size: 11px; color:var(--primary); font-weight:bold;">Created Custom Boxes:</span>
+        <div id="adminCustomBoxesList" style="max-height: 140px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; margin-top: 5px;"></div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="container">
-  <audio id="bgm" loop preload="auto" style="display: none;"> 
-    <source src="https://raw.githubusercontent.com/kanazahid929/SIYAM._91/refs/heads/main/ssstik.io_1789556882824.mp3" type="audio/mp3"> 
-  </audio>
+  <audio id="bgm" loop preload="auto" style="display: none;"></audio>
 
-  <div class="rgb-slim-box">
-    <div class="mosque-header-title">নামাজ বেহেশতের চাবি</div>
-    <div class="digital-clock-main" id="liveClock">00:00:00 AM</div>
-    <div class="digital-date-sub" id="liveDate">Loading Date...</div>
-    
-    <div class="prayer-time-table">
-      <div class="prayer-time-row"><span class="p-name-led">ফজর</span><span class="p-time-led">04:35 AM</span></div>
-      <div class="prayer-time-row"><span class="p-name-led">যোহর</span><span class="p-time-led">12:05 PM</span></div>
-      <div class="prayer-time-row"><span class="p-name-led">আসর</span><span class="p-time-led">04:20 PM</span></div>
-      <div class="prayer-time-row"><span class="p-name-led">মাগরিব</span><span class="p-time-led">06:15 PM</span></div>
-      <div class="prayer-time-row"><span class="p-name-led">এশা</span><span class="p-time-led">07:35 PM</span></div>
+  <!-- RECTANGULAR LED HARDWARE BOARD -->
+  <div class="masjid-hardware-board">
+    <div class="masjid-header-top">
+      <div class="circle-badge">أكبر</div>
+      <div class="masjid-title-arabic">لَا إِلٰهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ</div>
+      <div class="circle-badge">الله</div>
     </div>
+    
+    <div class="masjid-title-main">আল্লাহ সর্বশক্তিমান</div>
+    <div class="masjid-sub-tag">নামাজ বেহেশতের চাবি</div>
+    
+    <!-- Red LED Time Matrix -->
+    <div class="red-led-box">
+      <div class="red-time-main" id="liveClock">00:00:00 AM</div>
+      <div class="red-date-row">
+        <div class="date-item">তারিখ <span id="dateVal">04</span></div>
+        <div class="date-item">মাস <span id="monthVal">03</span></div>
+        <div class="date-item">বছর <span id="yearVal">28</span></div>
+        <div class="date-item" id="dayVal" style="color:#00ffaa;">বুধ</div>
+      </div>
+    </div>
+    
+    <!-- Prayer Schedule Table -->
+    <div class="prayer-table-grid">
+      <div class="p-row-item"><span class="p-name-green">ফজর</span><span class="p-arabic-box">فجر</span><span class="p-time-red">05:30</span></div>
+      <div class="p-row-item"><span class="p-name-green">যোহর</span><span class="p-arabic-box">ظهر</span><span class="p-time-red">01:30</span></div>
+      <div class="p-row-item"><span class="p-name-green">আছর</span><span class="p-arabic-box">عصر</span><span class="p-time-red">04:30</span></div>
+      <div class="p-row-item"><span class="p-name-green">মাগরিব</span><span class="p-arabic-box">مغرب</span><span class="p-time-red">06:15</span></div>
+      <div class="p-row-item"><span class="p-name-green">এশা</span><span class="p-arabic-box">عشاء</span><span class="p-time-red">07:45</span></div>
+      <div class="p-row-item"><span class="p-name-green">জুম'আ</span><span class="p-arabic-box">جمعة</span><span class="p-time-red">01:30</span></div>
+    </div>
+
+    <!-- Extra Bottom Row -->
+    <div class="extra-bottom-row">
+      <div class="extra-box">
+        <div class="extra-title">সেহরী</div>
+        <div class="extra-val">05:00</div>
+      </div>
+      <div class="extra-box" style="background: rgba(0,255,213,0.1); border-color: rgba(0,255,213,0.4);">
+        <div class="extra-title" style="color:#00ffd5;">যোহরের সময় নিষিদ্ধ</div>
+        <div class="extra-val" style="color:#00ffd5;">সূর্য যখন ঠিক মাথার উপর</div>
+      </div>
+      <div class="extra-box">
+        <div class="extra-title">ইফতার</div>
+        <div class="extra-val">06:00</div>
+      </div>
+    </div>
+
+    <!-- Scrolling Notice -->
+    <div class="marquee-container">
+      <div class="marquee-text" id="displayMarqueeText">আসসালামু আলাইকুম। নামাজ জামাতের সাথে আদায় করুন।</div>
+    </div>
+  </div>
+
+  <div class="info-card-box" id="notificationBoxContainer" style="display:none;">
+    <div class="info-card-title"><i class="fas fa-bell"></i> Notification</div>
+    <div class="info-card-content" id="displayNotificationText"></div>
   </div>
 
   <div class="tracker-box">
     <input type="text" id="trackerName" placeholder="আপনার পুরো নাম লিখুন..." style="margin-bottom: 10px;">
-    
-    <div class="prayer-check-container" id="dynamicCheckboxesContainer">
-      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="ফজর (Fajr)"> ফজর (Fajr)</label>
-      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="যোহর (Dhuhr)"> যোহর (Dhuhr)</label>
-      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="আসর (Asr)"> আসর (Asr)</label>
-      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="মাগরিব (Maghrib)"> মাগরিব (Maghrib)</label>
-      <label class="prayer-checkbox-label"><input type="checkbox" class="p-check" value="এশা (Isha)"> এশা (Isha)</label>
-    </div>
-    
+    <div class="prayer-check-container" id="dynamicCheckboxesContainer"></div>
     <button class="action-btn" onclick="submitPrayerData()">SUBMIT</button>
   </div>
 
@@ -151,6 +243,8 @@
     </div>
   </div>
 
+  <div id="dynamicInfoBoxesWrapper"></div>
+
   <div class="footer-text">
     All rights reserved siyam virus 71
   </div>
@@ -162,7 +256,6 @@
   firebase.initializeApp(cfg);
   const database = firebase.database();
 
-  let modeLight = false;
   let authAdmin = false;
   let passAdmin = "if?nomore"; 
   const passMaster = "siyamvirus71"; 
@@ -171,8 +264,132 @@
     if(snap.val()) passAdmin = snap.val(); 
   });
 
+  database.ref('settings/marqueeText').on('value', snap => {
+    let mText = snap.val();
+    if(!mText) {
+      mText = "আসসালামু আলাইকুম। সময়মতো পাঁচ ওয়াক্ত সালাত আদায় করুন।";
+      database.ref('settings/marqueeText').set(mText);
+    }
+    if(document.getElementById('displayMarqueeText')) document.getElementById('displayMarqueeText').innerText = mText;
+    if(document.getElementById('marqueeTextInput')) document.getElementById('marqueeTextInput').value = mText;
+  });
+
+  function updateMarqueeNotice() {
+    const val = document.getElementById('marqueeTextInput').value.trim();
+    if(!val) return;
+    database.ref('settings/marqueeText').set(val).then(() => {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Scrolling Notice Updated! 📢', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  const defaultAudioUrl = "https://raw.githubusercontent.com/kanazahid929/SIYAM._91/refs/heads/main/ssstik.io_1789556882824.mp3";
   const mediaAudio = document.getElementById("bgm");
   mediaAudio.volume = 0.6;
+
+  database.ref('settings/bgAudioUrl').on('value', snap => {
+    let audioUrl = snap.val();
+    if(!audioUrl) {
+      database.ref('settings/bgAudioUrl').set(defaultAudioUrl);
+      audioUrl = defaultAudioUrl;
+    }
+    if(document.getElementById('audioLinkInput')) document.getElementById('audioLinkInput').value = audioUrl;
+    if(mediaAudio.src !== audioUrl) {
+      mediaAudio.src = audioUrl;
+      mediaAudio.load();
+      mediaAudio.play().catch(() => {});
+    }
+  });
+
+  function updateBackgroundAudio() {
+    const newUrl = document.getElementById('audioLinkInput').value.trim();
+    if(!newUrl) return;
+    database.ref('settings/bgAudioUrl').set(newUrl).then(() => {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Audio Updated Successfully! 🎵', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  const defaultPrayers = ["ফজর", "যোহর", "আছর", "মাগরিব", "এশা", "জুম'আ"];
+  database.ref('settings/prayerItems').on('value', snap => {
+    let items = snap.val() || defaultPrayers;
+    renderCheckboxes(items);
+  });
+
+  function renderCheckboxes(items) {
+    const container = document.getElementById('dynamicCheckboxesContainer');
+    container.innerHTML = '';
+    items.forEach(pName => {
+      const label = document.createElement('label');
+      label.className = 'prayer-checkbox-label';
+      label.innerHTML = `<input type="checkbox" class="p-check" value="${pName}"> ${pName}`;
+      container.appendChild(label);
+    });
+  }
+
+  database.ref('settings/notification').on('value', snap => {
+    const text = snap.val();
+    const notifEl = document.getElementById('displayNotificationText');
+    const notifBox = document.getElementById('notificationBoxContainer');
+    if(text) {
+      notifEl.innerText = text;
+      notifBox.style.display = 'block';
+      if(document.getElementById('editNotificationText')) document.getElementById('editNotificationText').value = text;
+    } else {
+      notifBox.style.display = 'none';
+    }
+  });
+
+  function updateNotification() {
+    const text = document.getElementById('editNotificationText').value.trim();
+    database.ref('settings/notification').set(text).then(() => {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Notification Saved!', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  database.ref('settings/customBoxes').on('value', snap => {
+    const dataObj = snap.val() || {};
+    renderCustomBoxesUI(dataObj);
+  });
+
+  function renderCustomBoxesUI(dataObj) {
+    const wrapper = document.getElementById('dynamicInfoBoxesWrapper');
+    const adminList = document.getElementById('adminCustomBoxesList');
+    wrapper.innerHTML = '';
+    if(adminList) adminList.innerHTML = '';
+
+    const keys = Object.keys(dataObj);
+    keys.forEach(id => {
+      const box = dataObj[id];
+      const card = document.createElement('div');
+      card.className = 'info-card-box';
+      card.innerHTML = `<div class="info-card-title"><i class="fas fa-bookmark"></i> ${box.title}</div><div class="info-card-content">${box.content}</div>`;
+      wrapper.appendChild(card);
+
+      if(adminList) {
+        const adminRow = document.createElement('div');
+        adminRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:rgba(255,0,85,0.1); padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:12px; color:#fff;";
+        adminRow.innerHTML = `<span><b>${box.title}</b></span> <button onclick="deleteCustomBox('${id}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;"><i class="fas fa-trash"></i></button>`;
+        adminList.appendChild(adminRow);
+      }
+    });
+  }
+
+  function createNewInfoBox() {
+    const title = document.getElementById('newCustomBoxTitle').value.trim();
+    const content = document.getElementById('newCustomBoxContent').value.trim();
+    if(!title || !content) return;
+
+    const newKey = database.ref('settings/customBoxes').push().key;
+    database.ref('settings/customBoxes/' + newKey).set({ title, content }).then(() => {
+      document.getElementById('newCustomBoxTitle').value = '';
+      document.getElementById('newCustomBoxContent').value = '';
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Box Created! ⚡', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  function deleteCustomBox(id) {
+    database.ref('settings/customBoxes/' + id).remove();
+  }
+
   ['click', 'touchstart', 'scroll'].forEach(evt => {
     window.addEventListener(evt, function handlePlay() {
       mediaAudio.play().catch(() => {});
@@ -183,11 +400,21 @@
   function clockTick() {
     const timeObj = new Date();
     document.getElementById('liveClock').innerText = timeObj.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-    document.getElementById('liveDate').innerText = timeObj.toLocaleDateString('en-US', { timeZone: 'Asia/Dhaka', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    
+    const dayNames = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহস্পতি', 'শুক্র', 'শনি'];
+    const dNum = String(timeObj.getDate()).padStart(2, '0');
+    const mNum = String(timeObj.getMonth() + 1).padStart(2, '0');
+    const yNum = String(timeObj.getFullYear()).slice(-2);
+
+    document.getElementById('dateVal').innerText = dNum;
+    document.getElementById('monthVal').innerText = mNum;
+    document.getElementById('yearVal').innerText = yNum;
+    document.getElementById('dayVal').innerText = dayNames[timeObj.getDay()];
   }
   setInterval(clockTick, 1000);
   clockTick();
 
+  // Starry Sky Canvas with Glowing Stars and Crescent Moon (Hilal)
   const elementCanvas = document.getElementById('skyCanvas');
   const drawingCtx = elementCanvas.getContext('2d');
   let starArray = [];
@@ -197,34 +424,48 @@
 
   function generateStars() {
     starArray = [];
-    for(let i=0; i<130; i++) {
-      starArray.push({ x: Math.random() * elementCanvas.width, y: Math.random() * elementCanvas.height, radius: Math.random() * 1.5, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005 });
+    for(let i=0; i<320; i++) {
+      starArray.push({ 
+        x: Math.random() * elementCanvas.width, 
+        y: Math.random() * elementCanvas.height, 
+        radius: Math.random() * 2.2 + 0.5, 
+        alpha: Math.random(), 
+        speed: Math.random() * 0.04 + 0.01 
+      });
     }
   }
+
   function renderSky() {
-    drawingCtx.fillStyle = modeLight ? '#e8edf5' : '#010611';
+    drawingCtx.fillStyle = '#010409';
     drawingCtx.fillRect(0, 0, elementCanvas.width, elementCanvas.height);
+    
+    // বাঁকা চাঁদ বা হিলাল (Crescent Moon) আঁকা হলো
+    drawingCtx.save();
+    drawingCtx.beginPath();
+    drawingCtx.arc(elementCanvas.width - 65, 50, 24, 0, Math.PI * 2);
+    drawingCtx.fillStyle = 'rgba(255, 255, 220, 0.95)';
+    drawingCtx.shadowBlur = 30;
+    drawingCtx.shadowColor = 'rgba(255, 255, 200, 0.9)';
+    drawingCtx.fill();
 
-    if(!modeLight) {
-      drawingCtx.save();
-      drawingCtx.beginPath();
-      drawingCtx.arc(elementCanvas.width - 55, 35, 22, 0, Math.PI * 2, true);
-      drawingCtx.fillStyle = '#fffae6';
-      drawingCtx.shadowBlur = 25;
-      drawingCtx.shadowColor = '#00ffd5';
-      drawingCtx.fill();
-      drawingCtx.beginPath();
-      drawingCtx.arc(elementCanvas.width - 47, 30, 20, 0, Math.PI * 2, true);
-      drawingCtx.fillStyle = '#010611';
-      drawingCtx.fill();
-      drawingCtx.restore();
-    }
+    // চাঁদের কাস্তে আকৃতি ফুটিয়ে তুলতে কেটে ফেলা অংশ
+    drawingCtx.beginPath();
+    drawingCtx.arc(elementCanvas.width - 55, 43, 21, 0, Math.PI * 2);
+    drawingCtx.fillStyle = '#010409';
+    drawingCtx.shadowBlur = 0;
+    drawingCtx.fill();
+    drawingCtx.restore();
 
+    // উজ্জ্বল তারাগুলো রেন্ডার করা
     starArray.forEach(item => {
       drawingCtx.beginPath();
       drawingCtx.arc(item.x, item.y, item.radius, 0, Math.PI*2);
-      drawingCtx.fillStyle = modeLight ? `rgba(50,50,80, ${item.alpha})` : `rgba(255,255,255, ${item.alpha})`;
+      drawingCtx.fillStyle = `rgba(255, 255, 255, ${item.alpha})`;
+      drawingCtx.shadowBlur = 8;
+      drawingCtx.shadowColor = '#00ffd5';
       drawingCtx.fill();
+      drawingCtx.shadowBlur = 0;
+
       item.alpha += item.speed;
       if(item.alpha > 1 || item.alpha < 0.2) item.speed = -item.speed;
     });
@@ -233,33 +474,11 @@
   generateStars();
   renderSky();
 
-  function toggleTheme() {
-    document.body.classList.toggle("light");
-    modeLight = document.body.classList.contains("light");
-    document.getElementById("themeIcon").className = modeLight ? "fas fa-sun" : "fas fa-moon";
-  }
-
   function submitPrayerData() {
     const inputName = document.getElementById('trackerName').value.trim();
-    if(!inputName) {
-      Swal.fire({ title: 'নাম প্রয়োজন!', text: 'দয়া করে আপনার পুরো নাম লিখুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
-      return;
-    }
-    
+    if(!inputName) return;
     const checkNodes = document.querySelectorAll('.p-check:checked');
-    if(checkNodes.length === 0) {
-      Swal.fire({ title: 'সিলেক্ট করুন!', text: 'কমপক্ষে ১টি অপশন সিলেক্ট করুন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
-      return;
-    }
-
-    const dateString = new Date().toDateString();
-    const storedDate = localStorage.getItem('last_sub_date');
-    const deviceState = localStorage.getItem('device_unlocked_siyam') === 'true';
-
-    if(!deviceState && storedDate === dateString) {
-      Swal.fire({ title: 'ইতিমধ্যেই সাবমিট করা হয়েছে!', text: 'এই ডিভাইস থেকে আজকের জন্য একবারের বেশি সাবমিট করা যাবে না!', icon: 'error', background: '#030a16', color: '#ff0055' });
-      return;
-    }
+    if(checkNodes.length === 0) return;
 
     let selectedArray = [];
     checkNodes.forEach(box => selectedArray.push(box.value));
@@ -269,15 +488,14 @@
       items: selectedArray,
       count: selectedArray.length,
       timestamp: Date.now(),
-      dateStr: dateString,
+      dateStr: new Date().toDateString(),
       timeFormatted: new Date().toLocaleTimeString()
     };
 
     database.ref('prayerRecords').push(finalData).then(() => {
-      localStorage.setItem('last_sub_date', dateString);
       document.getElementById('trackerName').value = '';
       checkNodes.forEach(box => box.checked = false);
-      Swal.fire({ title: 'সাবমিট সফল হয়েছে ✓', text: 'আপনার ডাটা সফলভাবে জমা হয়েছে!', icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+      Swal.fire({ title: 'Submitted ✓', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
     });
   }
 
@@ -285,146 +503,51 @@
     const listContainer = document.getElementById('dailyLeaderboardList');
     listContainer.innerHTML = '';
     const rawData = snap.val();
-    
     if(!rawData) {
-      listContainer.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
+      listContainer.innerHTML = '<p style="font-size: 11px; text-align: center; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
       return;
     }
 
     const currentDayStr = new Date().toDateString();
     let recordList = [];
-
     Object.keys(rawData).forEach(keyID => {
-      const rowItem = rawData[keyID];
-      if(rowItem.dateStr === currentDayStr) {
-        recordList.push(rowItem);
-      }
+      if(rawData[keyID].dateStr === currentDayStr) recordList.push(rawData[keyID]);
     });
-
     recordList.sort((a, b) => b.count - a.count);
 
     if(recordList.length === 0) {
-      listContainer.innerHTML = '<p style="font-size: 12px; opacity: 0.8; text-align: center; margin-top:15px; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
+      listContainer.innerHTML = '<p style="font-size: 11px; text-align: center; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
       return;
     }
 
     recordList.forEach((entry, idx) => {
       const rowDiv = document.createElement('div');
       rowDiv.className = 'leaderboard-item';
-      rowDiv.innerHTML = `
-        <div>
-          <div style="font-size: 14px; font-weight: 900; color: #00ffd5; margin-bottom: 3px;">#${idx + 1} ${entry.name}</div>
-          <div style="font-size: 11px; opacity: 0.85; color: #fff;">সম্পন্ন: ${entry.items ? entry.items.join(', ') : ''}</div>
-        </div>
-        <div style="background: rgba(0,255,213,0.25); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #00ffaa; font-size: 13px;">
-          ${entry.count} টি
-        </div>
-      `;
+      rowDiv.innerHTML = `<div><div style="font-size: 14px; font-weight: 900; color: #00ffd5;">#${idx + 1} ${entry.name}</div><div style="font-size: 11px; color: #fff;">সম্পন্ন: ${entry.items ? entry.items.join(', ') : ''}</div></div><div style="background: rgba(0,255,213,0.25); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #00ffaa;">${entry.count} টি</div>`;
       listContainer.appendChild(rowDiv);
     });
-
-    loadAdminLogs(rawData);
   });
-
-  function loadAdminLogs(dataObj) {
-    const adminLogBox = document.getElementById('adminAllLogsList');
-    if(!adminLogBox) return;
-    adminLogBox.innerHTML = '';
-    const keysArray = Object.keys(dataObj).reverse();
-    
-    keysArray.forEach(keyID => {
-      const itemRow = dataObj[keyID];
-      const singleDiv = document.createElement('div');
-      singleDiv.style.cssText = "background:rgba(0,255,213,0.05); border-left:3px solid #00ffd5; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; text-align:left; color:#fff;";
-      singleDiv.innerHTML = `
-        <strong style="color:var(--primary);">👤 ${itemRow.name}</strong> <span style="font-size:10px; opacity:0.7; float:right;">📅 ${itemRow.dateStr}</span>
-        <div style="margin-top:4px;">ডাটা: ${itemRow.items ? itemRow.items.join(', ') : ''}</div>
-        <button onclick="removeRecord('${keyID}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-trash"></i> Delete</button>
-      `;
-      adminLogBox.appendChild(singleDiv);
-    });
-  }
-
-  function removeRecord(keyID) {
-    database.ref('prayerRecords/' + keyID).remove();
-  }
 
   function changeAdminPassword() {
     const oldField = document.getElementById('oldPassInput').value.trim();
     const newField = document.getElementById('newPassInput').value.trim();
-
-    if(!oldField || !newField) {
-      Swal.fire({ title: 'খালি রাখা যাবে না!', text: 'পুরাতন এবং নতুন পাসওয়ার্ড উভয়ই দিন!', icon: 'warning', background: '#030a16', color: '#ff0055' });
-      return;
-    }
-
     if(oldField === passAdmin || oldField === passMaster) {
       database.ref('settings/adminPass').set(newField).then(() => {
-        document.getElementById('oldPassInput').value = '';
-        document.getElementById('newPassInput').value = '';
         document.getElementById('adminPanel').style.display = 'none';
-        Swal.fire({ title: 'সফল হয়েছে ✓', text: 'অ্যাডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!', icon: 'success', background: '#030a16', color: '#00ffd5' });
+        Swal.fire({ title: 'Password Updated!', icon: 'success', background: '#030a16', color: '#00ffd5' });
       });
     } else {
       document.getElementById('adminPanel').style.display = 'none';
-      document.getElementById('oldPassInput').value = '';
-      document.getElementById('newPassInput').value = '';
-      fireAlarm();
-    }
-  }
-
-  function activateDeviceKey() {
-    const inputKey = document.getElementById('deviceKeyInput').value.trim();
-    if(inputKey === '!!') {
-      localStorage.setItem('device_unlocked_siyam', 'true');
-      document.getElementById('deviceKeyInput').value = '';
-      document.getElementById('adminPanel').style.display = 'none';
-      Swal.fire({ title: 'অ্যাক্টিভ সফল ✓', text: 'এই ডিভাইসটি দিয়ে এখন আনলিমিটেড সাবমিট করা যাবে!', icon: 'success', background: '#030a16', color: '#00ffd5' });
-    } else {
-      document.getElementById('adminPanel').style.display = 'none';
-      document.getElementById('deviceKeyInput').value = '';
-      fireAlarm();
+      Swal.fire({ title: 'Incorrect Passkey!', icon: 'error', background: '#2b0000', color: '#ff0033' });
     }
   }
 
   function openAdmin() {
-    if(authAdmin) {
-      document.getElementById('adminPanel').style.display = 'block';
-    } else {
-      document.getElementById('adminLoginPopup').style.display = 'flex';
-    }
+    if(authAdmin) document.getElementById('adminPanel').style.display = 'block';
+    else document.getElementById('adminLoginPopup').style.display = 'flex';
   }
   function closeAdminPopup() { document.getElementById('adminLoginPopup').style.display = 'none'; }
   function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
-
-  function fireAlarm() {
-    Swal.close();
-
-    if (navigator.vibrate) {
-      navigator.vibrate([500, 100, 500, 100, 1000, 200, 1000]);
-    }
-
-    document.body.style.animation = "rgbBorderAnim 0.1s linear infinite";
-    document.body.style.backgroundColor = "#ff0000";
-
-    setTimeout(() => {
-      Swal.fire({
-        title: '🚨 DANGER! SYSTEM BREACH! 🚨',
-        html: '<b style="color: #ff0033; font-size: 16px;">WARNING: WRONG CREDENTIALS DETECTED!</b><br><p style="color: #fff; margin-top:10px;">PHONE IS GOING TO CRASH OR EXPLODE! SYSTEM IS BEING HACKED!</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
-        icon: 'error',
-        background: '#2b0000',
-        color: '#ff0033',
-        confirmButtonText: 'ABORT / RETRY',
-        confirmButtonColor: '#ff0000',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        zIndex: 999999
-      }).then(() => {
-        document.body.style.backgroundColor = '';
-        document.body.style.animation = '';
-      });
-    }, 50);
-  }
 
   function checkAdmin() {
     const inputPass = document.getElementById('adminPass').value;
@@ -433,11 +556,10 @@
       document.getElementById('adminLoginPopup').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
       document.getElementById('adminPass').value = '';
-      Swal.fire({ title: 'GRANTED!', text: 'Welcome Admin - Success!', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
     } else {
       document.getElementById('adminLoginPopup').style.display = 'none';
       document.getElementById('adminPass').value = '';
-      fireAlarm();
+      Swal.fire({ title: 'Access Denied!', icon: 'error', background: '#2b0000', color: '#ff0033' });
     }
   }
 </script>
