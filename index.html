@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> SIYAM VAI 999+</title>
+  <title>ADMIN PANEL</title>
   
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -88,7 +88,6 @@
     .info-title-siyam { font-size: 14px; font-weight: 900; color: #ffcc00; margin-bottom: 8px; text-shadow: 0 0 8px rgba(255,204,0,0.4); display: flex; align-items: center; gap: 8px; }
     .info-content-siyam { font-size: 12px; line-height: 1.6; color: #fff; opacity: 0.95; white-space: pre-line; }
 
-    /* Facebook Reactions Style */
     .fb-reactions-bar { display: flex; justify-content: space-around; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255,204,0,0.3); }
     .react-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(0,255,213,0.3); border-radius: 20px; padding: 6px 10px; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s; }
     .react-btn:active { transform: scale(0.9); }
@@ -102,7 +101,7 @@
     
     #adminLoginPopupSiyam, #adminPanelSiyam { position: fixed; inset: 0; background: var(--popup-siyam); z-index: 9999; display: none; overflow-y: auto; padding: 20px; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
     #adminLoginPopupSiyam { align-items: center; justify-content: center; }
-    .hacker-card-siyam { background: #030a16; padding: 30px 22px; border-radius: 20px; border: 2px solid #00ffd5; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.3); position: relative; z-index: 100000; }
+    .hacker-card-siyam { background: #030a16; padding: 30px 22px; border-radius: 20px; border: 2px solid #00ffd5; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 35px rgba(0, 255, 213, 0.3); position: relative; z-index: 10000; }
     .admin-container-siyam { max-width: 550px; margin: 20px auto; background: var(--card-siyam); border-radius: 20px; border: 2px solid var(--primary-siyam); padding: 20px; }
     
     .filter-group-siyam { display: flex; gap: 5px; margin-bottom: 10px; }
@@ -124,7 +123,8 @@
   <div class="hacker-card-siyam" id="hackerCardSiyam">
     <button onclick="closeAdminPopupSiyam()" style="position:absolute; top:12px; right:15px; background:none; border:none; color:#00ffd5; font-size:18px; cursor:pointer;"><i class="fas fa-times"></i></button>
     <div class="rgb-text-siyam" style="font-size: 20px; font-weight: 900; margin-bottom: 15px;">ADMIN PANEL</div>
-    <input type="password" id="adminPassSiyam" placeholder="Enter Access Key..." onkeyup="if(event.key==='Enter') checkAdminSiyam()">
+    <input type="text" id="adminNameSiyam" placeholder="NAME :" style="margin-bottom: 8px;">
+    <input type="password" id="adminPassSiyam" placeholder="PASSWORD :" onkeyup="if(event.key==='Enter') checkAdminSiyam()" style="margin-bottom: 12px;">
     <button onclick="checkAdminSiyam()" class="btn-siyam">GRANT ACCESS</button>
   </div>
 </div>
@@ -134,6 +134,13 @@
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-siyam); padding-bottom: 10px;">
       <h3 style="color:var(--primary-siyam);"><i class="fas fa-crown"></i> ADMIN PANEL</h3>
       <button onclick="closeAdminPanelSiyam()" style="background: red; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
+    </div>
+
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary-siyam); margin-bottom: 6px;"><i class="fas fa-history"></i> Admin Login Logs & Control</h4>
+      <div id="adminLogListSiyam" style="max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; margin-top: 5px;">
+        <p style="font-size: 11px; opacity: 0.7;">No admin logins recorded yet.</p>
+      </div>
     </div>
 
     <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
@@ -266,7 +273,6 @@
     <div class="info-title-siyam"><i class="fas fa-bell"></i> Notification</div>
     <div class="info-content-siyam" id="displayNotificationTextSiyam"></div>
     
-    <!-- Facebook Reactions Bar -->
     <div class="fb-reactions-bar">
       <button class="react-btn" onclick="sendReaction('love')">❤️ <span id="countLove">0</span></button>
       <button class="react-btn" onclick="sendReaction('care')">🫂 <span id="countCare">0</span></button>
@@ -283,10 +289,19 @@
 
   <div class="leaderboard-box-siyam">
     <div style="border-bottom: 1px dashed rgba(0,255,213,0.4); padding-bottom: 8px; text-align: center;">
-      <span class="rgb-text-siyam" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Leaderboard</span>
+      <span class="rgb-text-siyam" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Leaderboard (আজকের)</span>
     </div>
     <div class="leaderboard-list-siyam" id="dailyLeaderboardSiyam">
       <p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top: 15px;">Loading leaderboard...</p>
+    </div>
+  </div>
+
+  <div class="leaderboard-box-siyam" style="border-color: #ffcc00; animation: none;">
+    <div style="border-bottom: 1px dashed rgba(255,204,0,0.4); padding-bottom: 8px; text-align: center;">
+      <span style="font-size: 15px; font-weight: 900; color: #ffcc00; letter-spacing: 1px;">⭐ ১ মাসের লিডারবোর্ড (গত ৩০ দিন)</span>
+    </div>
+    <div class="leaderboard-list-siyam" id="monthlyLeaderboardSiyam">
+      <p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top: 15px;">Loading monthly leaderboard...</p>
     </div>
   </div>
 
@@ -305,13 +320,48 @@
 
   let authAdminSiyam = false;
   let passAdminSiyam = "if?nomore"; 
-  const passMasterSiyam = "siyamvirus71"; 
+  const passMasterSiyam = "duble?12vai"; 
   let rawLogsSiyam = {};
   let currentFilterSiyam = 'today';
 
   dbSiyam.ref('settings/adminPass').on('value', snap => { 
     if(snap.val()) passAdminSiyam = snap.val(); 
   });
+
+  dbSiyam.ref('settings/adminLogins').on('value', snap => {
+    const list = document.getElementById('adminLogListSiyam');
+    if(!list) return;
+    list.innerHTML = '';
+    const logs = snap.val();
+    if(!logs) {
+      list.innerHTML = '<p style="font-size: 11px; opacity: 0.7;">No admin logins recorded yet.</p>';
+      return;
+    }
+    Object.keys(logs).forEach(key => {
+      const item = logs[key];
+      const row = document.createElement('div');
+      row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:rgba(0,255,213,0.1); padding:5px 8px; border-radius:6px; margin-bottom:4px; font-size:11px; color:#fff;";
+      row.innerHTML = `<span>👤 <b>${item.name}</b> <span style="font-size:9px; opacity:0.7;">(${item.time})</span></span> <button onclick="blockAdminNameSiyam('${item.name}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;"><i class="fas fa-ban"></i> Block</button>`;
+      list.appendChild(row);
+    });
+  });
+
+  dbSiyam.ref('settings/blockedAdmins').on('value', snap => {
+    const blocked = snap.val() || {};
+    const myName = localStorage.getItem('siyam_current_admin');
+    if(myName && blocked[myName]) {
+      authAdminSiyam = false;
+      localStorage.removeItem('siyam_current_admin');
+      document.getElementById('adminPanelSiyam').style.display = 'none';
+      Swal.fire({ title: 'BLOCKED ⛔', text: 'আপনার নাম্বারা/নাম এডমিন প্যানেল থেকে ব্লক করা হয়েছে!', icon: 'error', background: '#2b0000', color: '#ff0033' });
+    }
+  });
+
+  function blockAdminNameSiyam(name) {
+    dbSiyam.ref('settings/blockedAdmins/' + name).set(true).then(() => {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `${name} Blocked Successfully!`, showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    });
+  }
 
   dbSiyam.ref('settings/marqueeText').on('value', snap => {
     let textVal = snap.val();
@@ -374,7 +424,6 @@
     });
   }
 
-  // Notification and Reactions Realtime Sync
   dbSiyam.ref('settings/notification').on('value', snap => {
     const data = snap.val();
     const el = document.getElementById('displayNotificationTextSiyam');
@@ -414,7 +463,7 @@
 
     dbSiyam.ref('settings/notification').set(text);
     dbSiyam.ref('settings/reactions').set({ love: l, care: c, wow: w, sad: s }).then(() => {
-      localStorage.removeItem('siyam_reacted_notif'); // Reset user reaction lock when admin changes notice
+      localStorage.removeItem('siyam_reacted_notif');
       Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Notification & Reactions Updated!', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
     });
   }
@@ -581,7 +630,6 @@
   initStarsSiyam();
   renderSkySiyam();
 
-  // Cumulative Submission Logic (Appending prayers under the same user name for the day)
   function submitPrayerDataSiyam() {
     const inputName = document.getElementById('trackerNameSiyam').value.trim();
     if(!inputName) {
@@ -595,7 +643,6 @@
     }
 
     const dateStr = new Date().toDateString();
-    const isUnlocked = localStorage.getItem('siyam_device_unlocked') === 'true';
 
     dbSiyam.ref('prayerRecords').once('value', snapshot => {
       let existingKey = null;
@@ -624,10 +671,6 @@
         return;
       }
 
-      if(!isUnlocked && currentItems.length >= 6) { // 6 items max (5 prayers + juma or max count)
-        // Check if fully completed
-      }
-
       const payload = {
         name: inputName,
         items: currentItems,
@@ -641,7 +684,7 @@
         dbSiyam.ref('prayerRecords/' + existingKey).set(payload).then(() => {
           document.getElementById('trackerNameSiyam').value = '';
           checks.forEach(box => box.checked = false);
-          Swal.fire({ title: 'Updated Successfully ✓', text: `আপনার সালাতের তালিকা আপডেট হয়েছে (মোট: ${currentItems.length} টি)`, icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+          Swal.fire({ title: 'Updated Successfully ✓', text: `আপনার সালাতের তালিকা আপডেট হয়েছে (মোট: ${currentItems.length} ওয়াক্ত)`, icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
         });
       } else {
         dbSiyam.ref('prayerRecords').push(payload).then(() => {
@@ -655,29 +698,65 @@
 
   dbSiyam.ref('prayerRecords').on('value', snap => {
     const listContainer = document.getElementById('dailyLeaderboardSiyam');
+    const monthlyContainer = document.getElementById('monthlyLeaderboardSiyam');
     listContainer.innerHTML = '';
+    monthlyContainer.innerHTML = '';
+    
     const data = snap.val();
     if(!data) {
       listContainer.innerHTML = '<p style="font-size: 11px; text-align: center; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
+      monthlyContainer.innerHTML = '<p style="font-size: 11px; text-align: center; color: #ffcc00; font-weight: bold;">No Records Found for Last 30 Days</p>';
       return;
     }
 
     rawLogsSiyam = data;
     const currentDay = new Date().toDateString();
     let records = [];
-    Object.keys(data).forEach(id => {
-      if(data[id].dateStr === currentDay) records.push(data[id]);
-    });
-    records.sort((a, b) => b.count - a.count);
+    let monthlyTotals = {};
+    const now = Date.now();
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
 
+    Object.keys(data).forEach(id => {
+      const entry = data[id];
+      if(entry.dateStr === currentDay) {
+        records.push(entry);
+      }
+      if((now - entry.timestamp) <= thirtyDaysMs) {
+        let cleanName = entry.name.trim();
+        let matchedKey = Object.keys(monthlyTotals).find(k => k.toLowerCase() === cleanName.toLowerCase());
+        if(!matchedKey) {
+          matchedKey = cleanName;
+          monthlyTotals[matchedKey] = 0;
+        }
+        monthlyTotals[matchedKey] += (entry.count || (entry.items ? entry.items.length : 0));
+      }
+    });
+
+    records.sort((a, b) => b.count - a.count);
     if(records.length === 0) {
       listContainer.innerHTML = '<p style="font-size: 11px; text-align: center; color: #00ffd5; font-weight: bold;">No Entry Today</p>';
     } else {
       records.forEach((entry, idx) => {
         const item = document.createElement('div');
         item.className = 'leaderboard-item-siyam';
-        item.innerHTML = `<div><div style="font-size: 14px; font-weight: 900; color: #00ffd5;">#${idx + 1} ${entry.name}</div><div style="font-size: 11px; color: #fff;">সম্পন্ন: ${entry.items ? entry.items.join(', ') : ''}</div></div><div style="background: rgba(0,255,213,0.25); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #00ffaa;">${entry.count} টি</div>`;
+        item.innerHTML = `<div><div style="font-size: 14px; font-weight: 900; color: #00ffd5;">${idx + 1}. ${entry.name}</div><div style="font-size: 11px; color: #fff;">সম্পন্ন: ${entry.items ? entry.items.join(', ') : ''}</div></div><div style="background: rgba(0,255,213,0.25); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #00ffaa;">${entry.count} ওয়াক্ত</div>`;
         listContainer.appendChild(item);
+      });
+    }
+
+    let monthlyArr = Object.keys(monthlyTotals).map(name => ({ name, total: monthlyTotals[name] }));
+    monthlyArr.sort((a, b) => b.total - a.total);
+
+    if(monthlyArr.length === 0) {
+      monthlyContainer.innerHTML = '<p style="font-size: 11px; text-align: center; color: #ffcc00; font-weight: bold;">No Records Found for Last 30 Days</p>';
+    } else {
+      monthlyArr.forEach((itemData, idx) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item-siyam';
+        item.style.borderColor = '#ffcc00';
+        item.style.background = 'rgba(255,204,0,0.06)';
+        item.innerHTML = `<div><div style="font-size: 14px; font-weight: 900; color: #ffcc00;">${idx + 1}. ${itemData.name}</div><div style="font-size: 11px; color: #fff;">এক মাসে মোট</div></div><div style="background: rgba(255,204,0,0.2); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #ffcc00;">${itemData.total} ওয়াক্ত ✅ 123 🥺💚</div>`;
+        monthlyContainer.appendChild(item);
       });
     }
 
@@ -722,7 +801,7 @@
       div.style.cssText = "background:rgba(0,255,213,0.05); border-left:3px solid #00ffd5; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; text-align:left; color:#fff;";
       div.innerHTML = `
         <strong style="color:var(--primary-siyam);">👤 ${row.name}</strong> <span style="font-size:10px; opacity:0.7; float:right;">📅 ${row.dateStr}</span>
-        <div style="margin-top:4px;">ডাটা: ${row.items ? row.items.join(', ') : ''} (${row.count} টি)</div>
+        <div style="margin-top:4px;">ডাটা: ${row.items ? row.items.join(', ') : ''} (${row.count} ওয়াক্ত)</div>
         <button onclick="removeRecordSiyam('${id}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-trash"></i> Delete</button>
       `;
       box.appendChild(div);
@@ -807,7 +886,7 @@
     setTimeout(() => {
       Swal.fire({
         title: 'WARNING ⚠️',
-        html: '<b style="color: #ff0033; font-size: 16px;">SIYAM SECURITY ALERT</b><br><p style="color: #fff; margin-top:10px;">INCORRECT PASSKEY</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
+        html: '<b style="color: #ff0033; font-size: 16px;"> SECURITY ALERT</b><br><p style="color: #fff; margin-top:10px;">INCORRECT PASSKEY</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
         icon: 'error',
         background: '#2b0000',
         color: '#ff0033',
@@ -831,17 +910,42 @@
   function closeAdminPanelSiyam() { document.getElementById('adminPanelSiyam').style.display = 'none'; }
 
   function checkAdminSiyam() {
-    const input = document.getElementById('adminPassSiyam').value;
-    if(input === passAdminSiyam || input === passMasterSiyam) {
-      authAdminSiyam = true;
-      document.getElementById('adminLoginPopupSiyam').style.display = 'none';
-      document.getElementById('adminPanelSiyam').style.display = 'block';
-      document.getElementById('adminPassSiyam').value = '';
-    } else {
-      document.getElementById('adminLoginPopupSiyam').style.display = 'none';
-      document.getElementById('adminPassSiyam').value = '';
-      triggerSiyamAlarm();
+    const nameInput = document.getElementById('adminNameSiyam').value.trim();
+    const passInput = document.getElementById('adminPassSiyam').value.trim();
+    
+    if(!nameInput) {
+      Swal.fire({ title: 'নাম লিখুন!', text: 'দয়া করে আপনার নাম দিন।', icon: 'warning', background: '#030a16', color: '#ffcc00' });
+      return;
     }
+
+    dbSiyam.ref('settings/blockedAdmins/' + nameInput).once('value', snap => {
+      if(snap.val()) {
+        document.getElementById('adminLoginPopupSiyam').style.display = 'none';
+        Swal.fire({ title: 'ACCESS DENIED ⛔', text: 'আপনাকে এডমিন প্যানেল থেকে ব্লক করা হয়েছে!', icon: 'error', background: '#2b0000', color: '#ff0033' });
+        return;
+      }
+
+      if(passInput === passAdminSiyam || passInput === passMasterSiyam) {
+        authAdminSiyam = true;
+        localStorage.setItem('siyam_current_admin', nameInput);
+        
+        const logId = dbSiyam.ref('settings/adminLogins').push().key;
+        dbSiyam.ref('settings/adminLogins/' + logId).set({
+          name: nameInput,
+          time: new Date().toLocaleString()
+        });
+
+        document.getElementById('adminLoginPopupSiyam').style.display = 'none';
+        document.getElementById('adminPanelSiyam').style.display = 'block';
+        document.getElementById('adminNameSiyam').value = '';
+        document.getElementById('adminPassSiyam').value = '';
+      } else {
+        document.getElementById('adminLoginPopupSiyam').style.display = 'none';
+        document.getElementById('adminNameSiyam').value = '';
+        document.getElementById('adminPassSiyam').value = '';
+        triggerSiyamAlarm();
+      }
+    });
   }
 </script>
 </body>
