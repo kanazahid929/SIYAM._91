@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADMIN PANEL</title>
+  <title>SIYAM-VIRUS77</title>
   
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -107,8 +107,6 @@
     .filter-group-siyam { display: flex; gap: 5px; margin-bottom: 10px; }
     .filter-btn-siyam { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--primary-siyam); color: #fff; padding: 8px 4px; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s; }
     .filter-btn-siyam.active { background: var(--primary-siyam); color: #000; border-color: var(--primary-siyam); }
-
-    .footer-siyam { text-align: center; font-size: 11px; margin-top: 25px; opacity: 0.8; font-weight: bold; letter-spacing: 0.5px; color: var(--primary-siyam); }
   </style>
 </head>
 <body>
@@ -124,7 +122,7 @@
     <button onclick="closeAdminPopupSiyam()" style="position:absolute; top:12px; right:15px; background:none; border:none; color:#00ffd5; font-size:18px; cursor:pointer;"><i class="fas fa-times"></i></button>
     <div class="rgb-text-siyam" style="font-size: 20px; font-weight: 900; margin-bottom: 15px;">ADMIN PANEL</div>
     <input type="text" id="adminNameSiyam" placeholder="NAME :" style="margin-bottom: 8px;">
-    <input type="password" id="adminPassSiyam" placeholder="PASSWORD :" onkeyup="if(event.key==='Enter') checkAdminSiyam()" style="margin-bottom: 12px;">
+    <input type="password" id="adminPassSiyam" placeholder="Type password 🔑" onkeyup="if(event.key==='Enter') checkAdminSiyam()" style="margin-bottom: 12px;">
     <button onclick="checkAdminSiyam()" class="btn-siyam">GRANT ACCESS</button>
   </div>
 </div>
@@ -141,6 +139,15 @@
       <div id="adminLogListSiyam" style="max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; margin-top: 5px;">
         <p style="font-size: 11px; opacity: 0.7;">No admin logins recorded yet.</p>
       </div>
+    </div>
+
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
+      <h4 style="color:var(--primary-siyam); margin-bottom: 6px;"><i class="fas fa-calendar-alt"></i> Monthly Leaderboard Settings</h4>
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; margin-bottom:8px;">
+        <span style="font-size:12px;">Publish Monthly Leaderboard:</span>
+        <button id="monthlyToggleBtnSiyam" onclick="toggleMonthlyLeaderboardSiyam()" style="background:#ff0033; color:#fff; border:none; padding:4px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">OFF</button>
+      </div>
+      <div id="monthlyAlarmStatusSiyam" style="font-size:11px; color:#ffcc00;"></div>
     </div>
 
     <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
@@ -200,7 +207,7 @@
       </div>
     </div>
 
-    <div style="margin-top: 15px; text-align: left;">
+    <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
       <h4 style="color:var(--primary-siyam); margin-bottom: 8px;"><i class="fas fa-database"></i> Database Records & Filters</h4>
       
       <div class="filter-group-siyam">
@@ -212,6 +219,13 @@
 
       <div id="adminAllLogsListSiyam" style="max-height: 220px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 12px; -webkit-overflow-scrolling: touch;">
         <p style="font-size: 12px; opacity: 0.7; text-align: center;">Loading records smoothly...</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 15px; text-align: left;">
+      <h4 style="color:var(--primary-siyam); margin-bottom: 6px;"><i class="fas fa-laptop-code"></i> Last Login Device Info</h4>
+      <div id="lastLoginDeviceBoxSiyam" style="max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; font-size: 12px; color: #00ffaa;">
+        Loading last login info...
       </div>
     </div>
   </div>
@@ -289,16 +303,16 @@
 
   <div class="leaderboard-box-siyam">
     <div style="border-bottom: 1px dashed rgba(0,255,213,0.4); padding-bottom: 8px; text-align: center;">
-      <span class="rgb-text-siyam" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Leaderboard (আজকের)</span>
+      <span class="rgb-text-siyam" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Leaderboard</span>
     </div>
     <div class="leaderboard-list-siyam" id="dailyLeaderboardSiyam">
       <p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top: 15px;">Loading leaderboard...</p>
     </div>
   </div>
 
-  <div class="leaderboard-box-siyam" style="border-color: #ffcc00; animation: none;">
+  <div class="leaderboard-box-siyam" id="monthlyLeaderboardCardSiyam" style="border-color: #ffcc00; animation: none; display: none;">
     <div style="border-bottom: 1px dashed rgba(255,204,0,0.4); padding-bottom: 8px; text-align: center;">
-      <span style="font-size: 15px; font-weight: 900; color: #ffcc00; letter-spacing: 1px;">⭐ ১ মাসের লিডারবোর্ড (গত ৩০ দিন)</span>
+      <span style="font-size: 15px; font-weight: 900; color: #ffcc00; letter-spacing: 1px;">Monthly Leaderboard</span>
     </div>
     <div class="leaderboard-list-siyam" id="monthlyLeaderboardSiyam">
       <p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top: 15px;">Loading monthly leaderboard...</p>
@@ -306,10 +320,6 @@
   </div>
 
   <div id="dynamicInfoBoxesWrapperSiyam"></div>
-
-  <div class="footer-siyam">
-    Developed & Managed by Siyam Virus 71
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -324,27 +334,119 @@
   let rawLogsSiyam = {};
   let currentFilterSiyam = 'today';
 
+  if(!localStorage.getItem('siyam_device_unique_id')) {
+    localStorage.setItem('siyam_device_unique_id', 'dev_' + Math.random().toString(36.2) + Date.now());
+  }
+  const currentDeviceId = localStorage.getItem('siyam_device_unique_id');
+
   dbSiyam.ref('settings/adminPass').on('value', snap => { 
     if(snap.val()) passAdminSiyam = snap.val(); 
   });
 
+  dbSiyam.ref('settings/monthlyPublish').on('value', snap => {
+    const isPublished = snap.val() === true;
+    const btn = document.getElementById('monthlyToggleBtnSiyam');
+    const card = document.getElementById('monthlyLeaderboardCardSiyam');
+    if(btn) {
+      btn.innerText = isPublished ? 'ON' : 'OFF';
+      btn.style.background = isPublished ? '#00ff88' : '#ff0033';
+    }
+    if(card) {
+      card.style.display = isPublished ? 'block' : 'none';
+    }
+  });
+
+  dbSiyam.ref('settings/monthlyStartTime').on('value', snap => {
+    let startTime = snap.val();
+    const now = Date.now();
+    const oneMonthMs = 30 * 24 * 60 * 60 * 1000;
+    
+    if(!startTime) {
+      dbSiyam.ref('settings/monthlyStartTime').set(now);
+      startTime = now;
+    }
+
+    const elapsed = now - startTime;
+    const remaining = oneMonthMs - elapsed;
+    const alarmStatusEl = document.getElementById('monthlyAlarmStatusSiyam');
+
+    if(remaining <= 0) {
+      if(alarmStatusEl) alarmStatusEl.innerHTML = "⚠️ <b>1 মাস পূর্ণ হয়েছে! আপনি এখন মাসিক লিডারবোর্ড ON করতে পারেন।</b>";
+      if(!localStorage.getItem('siyam_monthly_alarm_shown')) {
+        localStorage.setItem('siyam_monthly_alarm_shown', 'true');
+        Swal.fire({ title: 'Monthly Limit Reached! 🔔', text: '১ মাস পূর্ণ হয়েছে! এখন অ্যাডমিন প্যানেল থেকে মাসিক লিডারবোর্ড ON করে দিন।', icon: 'info', background: '#030a16', color: '#ffcc00' });
+      }
+    } else {
+      const daysLeft = Math.ceil(remaining / (24 * 60 * 60 * 1000));
+      if(alarmStatusEl) alarmStatusEl.innerHTML = `⏳ ১ মাস পূর্ণ হতে আর প্রায় ${daysLeft} দিন বাকি আছে।`;
+    }
+  });
+
+  function toggleMonthlyLeaderboardSiyam() {
+    dbSiyam.ref('settings/monthlyPublish').once('value', snap => {
+      const current = snap.val() === true;
+      dbSiyam.ref('settings/monthlyPublish').set(!current).then(() => {
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `Monthly Leaderboard Turned ${!current ? 'ON' : 'OFF'}!`, showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+      });
+    });
+  }
+
   dbSiyam.ref('settings/adminLogins').on('value', snap => {
     const list = document.getElementById('adminLogListSiyam');
+    const lastBox = document.getElementById('lastLoginDeviceBoxSiyam');
     if(!list) return;
     list.innerHTML = '';
     const logs = snap.val();
     if(!logs) {
       list.innerHTML = '<p style="font-size: 11px; opacity: 0.7;">No admin logins recorded yet.</p>';
+      if(lastBox) lastBox.innerText = 'No login records available.';
       return;
     }
-    Object.keys(logs).forEach(key => {
+    
+    let lastEntry = null;
+    let keys = Object.keys(logs);
+    keys.forEach((key, index) => {
       const item = logs[key];
+      if(index === keys.length - 1) lastEntry = item;
+
       const row = document.createElement('div');
       row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:rgba(0,255,213,0.1); padding:5px 8px; border-radius:6px; margin-bottom:4px; font-size:11px; color:#fff;";
-      row.innerHTML = `<span>👤 <b>${item.name}</b> <span style="font-size:9px; opacity:0.7;">(${item.time})</span></span> <button onclick="blockAdminNameSiyam('${item.name}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;"><i class="fas fa-ban"></i> Block</button>`;
+      row.innerHTML = `<span>👤 <b>${item.name}</b> <span style="font-size:9px; opacity:0.7;">(${item.time})</span></span> <div><button onclick="deleteAdminLoginLogSiyam('${key}')" style="background:#ff9900; color:#fff; border:none; padding:2px 6px; border-radius:4px; cursor:pointer; margin-right:4px;"><i class="fas fa-trash"></i></button><button onclick="promptBlockAdminNameSiyam('${item.name}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;"><i class="fas fa-ban"></i> Block</button></div>`;
       list.appendChild(row);
     });
+
+    if(lastBox && lastEntry) {
+      lastBox.innerHTML = `<b>Name:</b> ${lastEntry.name}<br><b>Time:</b> ${lastEntry.time}`;
+    }
   });
+
+  function deleteAdminLoginLogSiyam(key) {
+    dbSiyam.ref('settings/adminLogins/' + key).remove().then(() => {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Log deleted successfully!', showConfirmButton: false, timer: 1200, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  function promptBlockAdminNameSiyam(name) {
+    Swal.fire({
+      title: `Block ${name}?`,
+      input: 'password',
+      inputPlaceholder: 'Enter password...',
+      background: '#030a16',
+      color: '#00ffd5',
+      confirmButtonColor: '#ff0033',
+      showCancelButton: true
+    }).then(result => {
+      if(result.isConfirmed) {
+        if(result.value === '??') {
+          dbSiyam.ref('settings/blockedAdmins/' + name).set(true).then(() => {
+            Swal.fire({ title: 'Blocked Successfully!', icon: 'success', background: '#030a16', color: '#00ffd5', timer: 1500, showConfirmButton: false });
+          });
+        } else {
+          Swal.fire({ title: 'Wrong Password!', icon: 'error', background: '#2b0000', color: '#ff0033' });
+        }
+      }
+    });
+  }
 
   dbSiyam.ref('settings/blockedAdmins').on('value', snap => {
     const blocked = snap.val() || {};
@@ -352,16 +454,11 @@
     if(myName && blocked[myName]) {
       authAdminSiyam = false;
       localStorage.removeItem('siyam_current_admin');
+      localStorage.removeItem('siyam_device_registered_name');
       document.getElementById('adminPanelSiyam').style.display = 'none';
-      Swal.fire({ title: 'BLOCKED ⛔', text: 'আপনার নাম্বারা/নাম এডমিন প্যানেল থেকে ব্লক করা হয়েছে!', icon: 'error', background: '#2b0000', color: '#ff0033' });
+      Swal.fire({ title: 'BLOCKED ⛔', text: 'আপনার নাম এডমিন প্যানেল থেকে চিরতরে ব্লক করা হয়েছে!', icon: 'error', background: '#2b0000', color: '#ff0033' });
     }
   });
-
-  function blockAdminNameSiyam(name) {
-    dbSiyam.ref('settings/blockedAdmins/' + name).set(true).then(() => {
-      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `${name} Blocked Successfully!`, showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
-    });
-  }
 
   dbSiyam.ref('settings/marqueeText').on('value', snap => {
     let textVal = snap.val();
@@ -755,7 +852,17 @@
         item.className = 'leaderboard-item-siyam';
         item.style.borderColor = '#ffcc00';
         item.style.background = 'rgba(255,204,0,0.06)';
-        item.innerHTML = `<div><div style="font-size: 14px; font-weight: 900; color: #ffcc00;">${idx + 1}. ${itemData.name}</div><div style="font-size: 11px; color: #fff;">এক মাসে মোট</div></div><div style="background: rgba(255,204,0,0.2); padding: 5px 10px; border-radius: 8px; font-weight: 900; color: #ffcc00;">${itemData.total} ওয়াক্ত ✅ 123 🥺💚</div>`;
+        
+        item.innerHTML = `
+          <div style="width: 100%;">
+            <div style="font-size: 14px; font-weight: 900; color: #ffcc00; margin-bottom: 4px;">
+              ${idx + 1}. ${itemData.name}
+            </div>
+            <div style="font-size: 12px; color: #fff; font-weight: bold;">
+              এক মাসে মোট💚 <span style="color: #00ffd5; font-size: 14px;">${itemData.total} ওয়াক্ত</span> নামাজ আদায় করেছে 💫🦋
+            </div>
+          </div>
+        `;
         monthlyContainer.appendChild(item);
       });
     }
@@ -886,7 +993,7 @@
     setTimeout(() => {
       Swal.fire({
         title: 'WARNING ⚠️',
-        html: '<b style="color: #ff0033; font-size: 16px;"> SECURITY ALERT</b><br><p style="color: #fff; margin-top:10px;">INCORRECT PASSKEY</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
+        html: '<b style="color: #ff0033; font-size: 16px;">SIYAM SECURITY ALERT</b><br><p style="color: #fff; margin-top:10px;">INCORRECT PASSKEY</p><div style="font-size: 40px; margin-top: 15px;">⚠️🔥☠️</div>',
         icon: 'error',
         background: '#2b0000',
         color: '#ff0033',
@@ -904,7 +1011,14 @@
 
   function openAdminSiyam() {
     if(authAdminSiyam) document.getElementById('adminPanelSiyam').style.display = 'block';
-    else document.getElementById('adminLoginPopupSiyam').style.display = 'flex';
+    else {
+      const savedName = localStorage.getItem('siyam_device_registered_name');
+      if(savedName) {
+        document.getElementById('adminNameSiyam').value = savedName;
+        document.getElementById('adminNameSiyam').disabled = true;
+      }
+      document.getElementById('adminLoginPopupSiyam').style.display = 'flex';
+    }
   }
   function closeAdminPopupSiyam() { document.getElementById('adminLoginPopupSiyam').style.display = 'none'; }
   function closeAdminPanelSiyam() { document.getElementById('adminPanelSiyam').style.display = 'none'; }
@@ -918,26 +1032,46 @@
       return;
     }
 
+    const registeredName = localStorage.getItem('siyam_device_registered_name');
+    if(registeredName && registeredName.toLowerCase() !== nameInput.toLowerCase()) {
+      Swal.fire({ title: 'DEVICE LOCKED ⛔', text: `এই ডিভাইসটি শুধুমাত্র "${registeredName}" নামের জন্য রেজিস্টার্ড siyam virus 002`, icon: 'error', background: '#2b0000', color: '#ff0033' });
+      return;
+    }
+
     dbSiyam.ref('settings/blockedAdmins/' + nameInput).once('value', snap => {
       if(snap.val()) {
         document.getElementById('adminLoginPopupSiyam').style.display = 'none';
-        Swal.fire({ title: 'ACCESS DENIED ⛔', text: 'আপনাকে এডমিন প্যানেল থেকে ব্লক করা হয়েছে!', icon: 'error', background: '#2b0000', color: '#ff0033' });
+        Swal.fire({ title: 'ACCESS DENIED ⛔', text: 'warnning acces blocked', icon: 'error', background: '#2b0000', color: '#ff0033' });
         return;
       }
 
       if(passInput === passAdminSiyam || passInput === passMasterSiyam) {
         authAdminSiyam = true;
         localStorage.setItem('siyam_current_admin', nameInput);
-        
-        const logId = dbSiyam.ref('settings/adminLogins').push().key;
-        dbSiyam.ref('settings/adminLogins/' + logId).set({
-          name: nameInput,
-          time: new Date().toLocaleString()
+        if(!registeredName) {
+          localStorage.setItem('siyam_device_registered_name', nameInput);
+        }
+
+        dbSiyam.ref('settings/adminLogins').orderByChild('name').equalTo(nameInput).once('value', existingSnap => {
+          if(!existingSnap.exists()) {
+            const logId = dbSiyam.ref('settings/adminLogins').push().key;
+            dbSiyam.ref('settings/adminLogins/' + logId).set({
+              name: nameInput,
+              time: new Date().toLocaleString(),
+              deviceId: currentDeviceId
+            });
+          } else {
+            existingSnap.forEach(child => {
+              dbSiyam.ref('settings/adminLogins/' + child.key).update({
+                time: new Date().toLocaleString(),
+                deviceId: currentDeviceId
+              });
+            });
+          }
         });
 
         document.getElementById('adminLoginPopupSiyam').style.display = 'none';
         document.getElementById('adminPanelSiyam').style.display = 'block';
-        document.getElementById('adminNameSiyam').value = '';
         document.getElementById('adminPassSiyam').value = '';
       } else {
         document.getElementById('adminLoginPopupSiyam').style.display = 'none';
