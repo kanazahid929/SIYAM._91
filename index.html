@@ -88,6 +88,12 @@
     .info-title-siyam { font-size: 14px; font-weight: 900; color: #ffcc00; margin-bottom: 8px; text-shadow: 0 0 8px rgba(255,204,0,0.4); display: flex; align-items: center; gap: 8px; }
     .info-content-siyam { font-size: 12px; line-height: 1.6; color: #fff; opacity: 0.95; white-space: pre-line; }
 
+    /* Facebook Reactions Style */
+    .fb-reactions-bar { display: flex; justify-content: space-around; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255,204,0,0.3); }
+    .react-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(0,255,213,0.3); border-radius: 20px; padding: 6px 10px; cursor: pointer; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 6px; transition: transform 0.1s; }
+    .react-btn:active { transform: scale(0.9); }
+    .react-btn span { font-size: 12px; font-weight: bold; color: #00ffd5; }
+
     .leaderboard-box-siyam { background: linear-gradient(135deg, rgba(2,12,28,0.95), rgba(1,6,17,0.98)); border: 2.5px solid #00ffd5; border-radius: 20px; padding: 15px; margin-top: 20px; box-shadow: 0 0 25px rgba(0,255,213,0.25); animation: rgbBorderSiyam 6s linear infinite; }
     .leaderboard-list-siyam { max-height: 250px; overflow-y: auto; margin-top: 10px; padding-right: 4px; -webkit-overflow-scrolling: touch; }
     .leaderboard-item-siyam { display: flex; justify-content: space-between; align-items: center; background: rgba(0,255,213,0.08); padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid #00ffd5; box-shadow: 0 0 10px rgba(0,255,213,0.1); }
@@ -117,7 +123,7 @@
 <div id="adminLoginPopupSiyam">
   <div class="hacker-card-siyam" id="hackerCardSiyam">
     <button onclick="closeAdminPopupSiyam()" style="position:absolute; top:12px; right:15px; background:none; border:none; color:#00ffd5; font-size:18px; cursor:pointer;"><i class="fas fa-times"></i></button>
-    <div class="rgb-text-siyam" style="font-size: 20px; font-weight: 900; margin-bottom: 15px;">SIYAM ADMIN PANEL</div>
+    <div class="rgb-text-siyam" style="font-size: 20px; font-weight: 900; margin-bottom: 15px;">ADMIN PANEL</div>
     <input type="password" id="adminPassSiyam" placeholder="Enter Access Key..." onkeyup="if(event.key==='Enter') checkAdminSiyam()">
     <button onclick="checkAdminSiyam()" class="btn-siyam">GRANT ACCESS</button>
   </div>
@@ -126,7 +132,7 @@
 <div id="adminPanelSiyam">
   <div class="admin-container-siyam">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-siyam); padding-bottom: 10px;">
-      <h3 style="color:var(--primary-siyam);"><i class="fas fa-crown"></i> Siyam Super Panel</h3>
+      <h3 style="color:var(--primary-siyam);"><i class="fas fa-crown"></i> ADMIN PANEL</h3>
       <button onclick="closeAdminPanelSiyam()" style="background: red; color: white; border: none; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Close</button>
     </div>
 
@@ -163,9 +169,17 @@
     </div>
 
     <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
-      <h4 style="color:var(--primary-siyam); margin-bottom: 6px;"><i class="fas fa-bell"></i> Edit Notification</h4>
+      <h4 style="color:var(--primary-siyam); margin-bottom: 6px;"><i class="fas fa-bell"></i> Edit Notification & Reactions Custom Count</h4>
       <textarea id="editNotificationTextSiyam" rows="2" placeholder="Write notification here..."></textarea>
-      <button onclick="updateNotificationSiyam()" class="btn-siyam" style="background:#ffcc00; color:#000; margin-top:2px;">Save Notification</button>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:6px;">
+        <div><label style="font-size:10px; color:#ffb3b3;">❤️ Love Count</label><input type="number" id="adminLoveCount" value="0"></div>
+        <div><label style="font-size:10px; color:#ffb3b3;">🫂 Care Count</label><input type="number" id="adminCareCount" value="0"></div>
+        <div><label style="font-size:10px; color:#ffb3b3;">😮 Wow Count</label><input type="number" id="adminWowCount" value="0"></div>
+        <div><label style="font-size:10px; color:#ffb3b3;">🥺 Sad Count</label><input type="number" id="adminSadCount" value="0"></div>
+      </div>
+      
+      <button onclick="updateNotificationSiyam()" class="btn-siyam" style="background:#ffcc00; color:#000; margin-top:4px;">Save Notification & Reactions</button>
     </div>
 
     <div style="margin-top: 15px; border-bottom: 2px solid rgba(0,255,213,0.3); padding-bottom: 12px; text-align: left;">
@@ -251,6 +265,14 @@
   <div class="info-box-siyam" id="notificationBoxSiyam" style="display:none;">
     <div class="info-title-siyam"><i class="fas fa-bell"></i> Notification</div>
     <div class="info-content-siyam" id="displayNotificationTextSiyam"></div>
+    
+    <!-- Facebook Reactions Bar -->
+    <div class="fb-reactions-bar">
+      <button class="react-btn" onclick="sendReaction('love')">❤️ <span id="countLove">0</span></button>
+      <button class="react-btn" onclick="sendReaction('care')">🫂 <span id="countCare">0</span></button>
+      <button class="react-btn" onclick="sendReaction('wow')">😮 <span id="countWow">0</span></button>
+      <button class="react-btn" onclick="sendReaction('sad')">🥺 <span id="countSad">0</span></button>
+    </div>
   </div>
 
   <div class="tracker-card-siyam">
@@ -261,7 +283,7 @@
 
   <div class="leaderboard-box-siyam">
     <div style="border-bottom: 1px dashed rgba(0,255,213,0.4); padding-bottom: 8px; text-align: center;">
-      <span class="rgb-text-siyam" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Siyam Leaderboard</span>
+      <span class="rgb-text-siyam" style="font-size: 15px; font-weight: 900; letter-spacing: 1px;">Leaderboard</span>
     </div>
     <div class="leaderboard-list-siyam" id="dailyLeaderboardSiyam">
       <p style="font-size: 11px; opacity: 0.7; text-align: center; margin-top: 15px;">Loading leaderboard...</p>
@@ -352,11 +374,14 @@
     });
   }
 
+  // Notification and Reactions Realtime Sync
   dbSiyam.ref('settings/notification').on('value', snap => {
-    const text = snap.val();
+    const data = snap.val();
     const el = document.getElementById('displayNotificationTextSiyam');
     const box = document.getElementById('notificationBoxSiyam');
-    if(text) {
+    
+    if(data) {
+      const text = typeof data === 'object' ? data.text : data;
       el.innerText = text;
       box.style.display = 'block';
       if(document.getElementById('editNotificationTextSiyam')) document.getElementById('editNotificationTextSiyam').value = text;
@@ -365,10 +390,48 @@
     }
   });
 
+  dbSiyam.ref('settings/reactions').on('value', snap => {
+    const react = snap.val() || { love: 0, care: 0, wow: 0, sad: 0 };
+    document.getElementById('countLove').innerText = react.love || 0;
+    document.getElementById('countCare').innerText = react.care || 0;
+    document.getElementById('countWow').innerText = react.wow || 0;
+    document.getElementById('countSad').innerText = react.sad || 0;
+
+    if(document.getElementById('adminLoveCount')) {
+      document.getElementById('adminLoveCount').value = react.love || 0;
+      document.getElementById('adminCareCount').value = react.care || 0;
+      document.getElementById('adminWowCount').value = react.wow || 0;
+      document.getElementById('adminSadCount').value = react.sad || 0;
+    }
+  });
+
   function updateNotificationSiyam() {
     const text = document.getElementById('editNotificationTextSiyam').value.trim();
-    dbSiyam.ref('settings/notification').set(text).then(() => {
-      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Notification Saved!', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    const l = parseInt(document.getElementById('adminLoveCount').value) || 0;
+    const c = parseInt(document.getElementById('adminCareCount').value) || 0;
+    const w = parseInt(document.getElementById('adminWowCount').value) || 0;
+    const s = parseInt(document.getElementById('adminSadCount').value) || 0;
+
+    dbSiyam.ref('settings/notification').set(text);
+    dbSiyam.ref('settings/reactions').set({ love: l, care: c, wow: w, sad: s }).then(() => {
+      localStorage.removeItem('siyam_reacted_notif'); // Reset user reaction lock when admin changes notice
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Notification & Reactions Updated!', showConfirmButton: false, timer: 1500, background: '#030a16', color: '#00ffd5' });
+    });
+  }
+
+  function sendReaction(type) {
+    if(localStorage.getItem('siyam_reacted_notif') === 'true') {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: 'You have already reacted!', showConfirmButton: false, timer: 1200, background: '#030a16', color: '#ff0055' });
+      return;
+    }
+
+    dbSiyam.ref('settings/reactions/' + type).transaction(current => {
+      return (current || 0) + 1;
+    }, (error, committed) => {
+      if(committed) {
+        localStorage.setItem('siyam_reacted_notif', 'true');
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Reacted successfully! ❤️', showConfirmButton: false, timer: 1200, background: '#030a16', color: '#00ffd5' });
+      }
     });
   }
 
@@ -518,38 +581,75 @@
   initStarsSiyam();
   renderSkySiyam();
 
+  // Cumulative Submission Logic (Appending prayers under the same user name for the day)
   function submitPrayerDataSiyam() {
     const inputName = document.getElementById('trackerNameSiyam').value.trim();
-    if(!inputName) return;
+    if(!inputName) {
+      Swal.fire({ title: 'নাম লিখুন!', text: 'দয়া করে আপনার পুরো নাম লিখুন।', icon: 'warning', background: '#030a16', color: '#ffcc00' });
+      return;
+    }
     const checks = document.querySelectorAll('.p-check-siyam:checked');
-    if(checks.length === 0) return;
-
-    const dateStr = new Date().toDateString();
-    const storedDate = localStorage.getItem('siyam_last_date');
-    const isUnlocked = localStorage.getItem('siyam_device_unlocked') === 'true';
-
-    if(!isUnlocked && storedDate === dateStr) {
-      Swal.fire({ title: 'ইতিমধ্যেই সাবমিট করা হয়েছে!', text: 'এই ডিভাইস থেকে আজকের জন্য একবারের বেশি সাবমিট করা যাবে না!', icon: 'error', background: '#030a16', color: '#ff0055' });
+    if(checks.length === 0) {
+      Swal.fire({ title: 'ওয়াক্ত সিলেক্ট করুন!', text: 'কমপক্ষে একটি ওয়াক্ত সিলেক্ট করুন।', icon: 'warning', background: '#030a16', color: '#ffcc00' });
       return;
     }
 
-    let itemsArr = [];
-    checks.forEach(box => itemsArr.push(box.value));
+    const dateStr = new Date().toDateString();
+    const isUnlocked = localStorage.getItem('siyam_device_unlocked') === 'true';
 
-    const payload = {
-      name: inputName,
-      items: itemsArr,
-      count: itemsArr.length,
-      timestamp: Date.now(),
-      dateStr: dateStr,
-      timeFormatted: new Date().toLocaleTimeString()
-    };
+    dbSiyam.ref('prayerRecords').once('value', snapshot => {
+      let existingKey = null;
+      let existingData = null;
 
-    dbSiyam.ref('prayerRecords').push(payload).then(() => {
-      localStorage.setItem('siyam_last_date', dateStr);
-      document.getElementById('trackerNameSiyam').value = '';
-      checks.forEach(box => box.checked = false);
-      Swal.fire({ title: 'Submitted ✓', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+      snapshot.forEach(childSnapshot => {
+        const val = childSnapshot.val();
+        if(val.dateStr === dateStr && val.name.toLowerCase() === inputName.toLowerCase()) {
+          existingKey = childSnapshot.key;
+          existingData = val;
+        }
+      });
+
+      let currentItems = existingData && existingData.items ? [...existingData.items] : [];
+      let newlyAdded = 0;
+
+      checks.forEach(box => {
+        if(!currentItems.includes(box.value)) {
+          currentItems.push(box.value);
+          newlyAdded++;
+        }
+      });
+
+      if(newlyAdded === 0 && existingData) {
+        Swal.fire({ title: 'ইতিমধ্যেই সাবমিট করা হয়েছে!', text: 'নির্বাচিত ওয়াক্তগুলো ইতিমধ্যে আপনার তালিকায় যুক্ত আছে!', icon: 'info', background: '#030a16', color: '#ff0055' });
+        return;
+      }
+
+      if(!isUnlocked && currentItems.length >= 6) { // 6 items max (5 prayers + juma or max count)
+        // Check if fully completed
+      }
+
+      const payload = {
+        name: inputName,
+        items: currentItems,
+        count: currentItems.length,
+        timestamp: Date.now(),
+        dateStr: dateStr,
+        timeFormatted: new Date().toLocaleTimeString()
+      };
+
+      if(existingKey) {
+        dbSiyam.ref('prayerRecords/' + existingKey).set(payload).then(() => {
+          document.getElementById('trackerNameSiyam').value = '';
+          checks.forEach(box => box.checked = false);
+          Swal.fire({ title: 'Updated Successfully ✓', text: `আপনার সালাতের তালিকা আপডেট হয়েছে (মোট: ${currentItems.length} টি)`, icon: 'success', timer: 1200, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+        });
+      } else {
+        dbSiyam.ref('prayerRecords').push(payload).then(() => {
+          document.getElementById('trackerNameSiyam').value = '';
+          checks.forEach(box => box.checked = false);
+          Swal.fire({ title: 'Submitted ✓', icon: 'success', timer: 1000, showConfirmButton: false, background: '#030a16', color: '#00ffd5' });
+        });
+      }
     });
   }
 
@@ -622,7 +722,7 @@
       div.style.cssText = "background:rgba(0,255,213,0.05); border-left:3px solid #00ffd5; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px; text-align:left; color:#fff;";
       div.innerHTML = `
         <strong style="color:var(--primary-siyam);">👤 ${row.name}</strong> <span style="font-size:10px; opacity:0.7; float:right;">📅 ${row.dateStr}</span>
-        <div style="margin-top:4px;">ডাটা: ${row.items ? row.items.join(', ') : ''}</div>
+        <div style="margin-top:4px;">ডাটা: ${row.items ? row.items.join(', ') : ''} (${row.count} টি)</div>
         <button onclick="removeRecordSiyam('${id}')" style="background:#ff0033; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer; margin-top:5px;"><i class="fas fa-trash"></i> Delete</button>
       `;
       box.appendChild(div);
